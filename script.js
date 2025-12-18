@@ -210,32 +210,6 @@ function updateViewerCounts() {
 
 setInterval(updateViewerCounts, 5000);
 
-// Sample Schedule Data
-const schedule = [
-    { time: '09:00', title: 'Zgjohet në Mëngjes', description: 'Banorët zgjohen dhe fillojnë ditën e tyre' },
-    { time: '12:00', title: 'Detyrat Ditore', description: 'Big Brother u cakton sfidat ditore' },
-    { time: '15:00', title: 'Nominimet', description: 'Ceremonia javore e nominimeve' },
-    { time: '18:00', title: 'Aktivitete Mbrëmjeje', description: 'Aktivitete grupore dhe lojëra' },
-    { time: '21:00', title: 'Emisioni Live', description: 'Transmetimi live në orarin kryesor' },
-    { time: '23:00', title: 'Transmetimi Natës', description: 'Transmetimi live 24/7 vazhdon' },
-];
-
-// Load Schedule
-function loadSchedule() {
-    const scheduleList = document.getElementById('scheduleList');
-    scheduleList.innerHTML = schedule.map(item => `
-        <div class="schedule-item">
-            <div>
-                <div class="schedule-time">${item.time}</div>
-            </div>
-            <div style="flex: 1;">
-                <div class="schedule-title">${item.title}</div>
-                <div class="schedule-description">${item.description}</div>
-            </div>
-        </div>
-    `).join('');
-}
-
 // Sample News Data
 const news = [
     {
@@ -291,7 +265,6 @@ function loadNews() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    loadSchedule();
     loadNews();
     
     // Initialize both video players
