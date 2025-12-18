@@ -210,61 +210,75 @@ function updateViewerCounts() {
 
 setInterval(updateViewerCounts, 5000);
 
-// News Data (empty for now)
-const news = [];
-
-// Clips Data (empty for now)
-const clips = [];
-
-// Load News
+// Load News from localStorage
 function loadNews() {
+    const news = JSON.parse(localStorage.getItem('bbvipNews') || '[]');
     const newsGrid = document.getElementById('newsGrid');
+    
     if (news.length === 0) {
         newsGrid.innerHTML = '<p style="text-align: center; color: var(--text-gray); font-size: 18px; grid-column: 1 / -1;">Nuk ka lajme për momentin.</p>';
     } else {
-        newsGrid.innerHTML = news.map(item => `
-            <div class="news-card">
-                <div class="news-image"></div>
-                <div class="news-content">
-                    <div class="news-date">${new Date(item.date).toLocaleDateString('sq-AL', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    })}</div>
-                    <div class="news-title">${item.title}</div>
-                    <div class="news-excerpt">${item.excerpt}</div>
+        newsGrid.innerHTML = news.map(item => {
+            const mediaElement = item.mediaUrl ? 
+                (item.mediaType && item.mediaType.startsWith('video/') || item.mediaUrl.includes('.mp4') || item.mediaUrl.includes('.webm') || item.mediaUrl.includes('.mov') ?
+                    `<video style="width: 100%; height: 200px; object-fit: cover;" controls><source src="${item.mediaUrl}" type="video/mp4"></video>` :
+                    `<img src="${item.mediaUrl}" style="width: 100%; height: 200px; object-fit: cover;" alt="${item.title}">`) :
+                `<div class="news-image"></div>`;
+            
+            return `
+                <div class="news-card">
+                    ${mediaElement}
+                    <div class="news-content">
+                        <div class="news-date">${new Date(item.date).toLocaleDateString('sq-AL', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</div>
+                        <div class="news-title">${item.title}</div>
+                        <div class="news-excerpt">${item.excerpt}</div>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 }
 
-// Load Clips
+// Load Clips from localStorage
 function loadClips() {
+    const clips = JSON.parse(localStorage.getItem('bbvipClips') || '[]');
     const clipsGrid = document.getElementById('clipsGrid');
+    
     if (clips.length === 0) {
         clipsGrid.innerHTML = '<p style="text-align: center; color: var(--text-gray); font-size: 18px; grid-column: 1 / -1;">Nuk ka klipa për momentin.</p>';
     } else {
-        clipsGrid.innerHTML = clips.map(item => `
-            <div class="news-card">
-                <div class="news-image" style="position: relative;">
+        clipsGrid.innerHTML = clips.map(item => {
+            const mediaElement = item.mediaUrl ? 
+                (item.mediaType && item.mediaType.startsWith('video/') || item.mediaUrl.includes('.mp4') || item.mediaUrl.includes('.webm') || item.mediaUrl.includes('.mov') || item.mediaUrl.startsWith('data:video/') ?
+                    `<video style="width: 100%; height: 200px; object-fit: cover;" controls><source src="${item.mediaUrl}" type="video/mp4"></video>` :
+                    `<img src="${item.mediaUrl}" style="width: 100%; height: 200px; object-fit: cover;" alt="${item.title}">`) :
+                `<div class="news-image" style="position: relative;">
                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(0, 51, 160, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
                         <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
                             <path d="M8 5v14l11-7z"/>
                         </svg>
                     </div>
+                </div>`;
+            
+            return `
+                <div class="news-card">
+                    ${mediaElement}
+                    <div class="news-content">
+                        <div class="news-date">${new Date(item.date).toLocaleDateString('sq-AL', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        })}</div>
+                        <div class="news-title">${item.title}</div>
+                        <div class="news-excerpt">${item.excerpt || ''}</div>
+                    </div>
                 </div>
-                <div class="news-content">
-                    <div class="news-date">${new Date(item.date).toLocaleDateString('sq-AL', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    })}</div>
-                    <div class="news-title">${item.title}</div>
-                    <div class="news-excerpt">${item.excerpt || ''}</div>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 }
 

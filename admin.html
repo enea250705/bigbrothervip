@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Big Brother VIP Albania</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .admin-login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 50%, #0d1b3a 100%);
+            padding: 20px;
+        }
+        .admin-login-box {
+            background: rgba(26, 26, 26, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            border: 2px solid var(--primary-blue);
+            box-shadow: 0 10px 40px rgba(0, 51, 160, 0.3);
+        }
+        .admin-login-box h1 {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            color: var(--text-light);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(15, 15, 15, 0.8);
+            border: 2px solid rgba(0, 51, 160, 0.3);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 10px rgba(0, 51, 160, 0.3);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-blue);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .login-btn:hover {
+            background: var(--secondary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 51, 160, 0.5);
+        }
+        .error-message {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        .back-link a:hover {
+            color: var(--primary-blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login-container">
+        <div class="admin-login-box">
+            <h1>Admin Login</h1>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">Hyr</button>
+                <div class="error-message" id="errorMessage">Kredencialet janë të gabuara!</div>
+            </form>
+            <div class="back-link">
+                <a href="index.html">← Kthehu në faqen kryesore</a>
+            </div>
+        </div>
+    </div>
+    <script src="admin.js"></script>
+</body>
+</html>
+
