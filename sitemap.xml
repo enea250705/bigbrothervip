@@ -11,7 +11,7 @@
     <!-- Homepage - Main Entry Point -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
         <!-- Alternate Language Versions -->
@@ -21,8 +21,8 @@
         <!-- Images -->
         <image:image>
             <image:loc>https://www.bigbrothervipalbania.com/images/og-image.jpg</image:loc>
-            <image:title>Big Brother VIP Albania Live Stream - Shiko 24/7</image:title>
-            <image:caption>Shiko Big Brother VIP Albania live stream 24/7. Akses falas në Kanali 1 dhe Kanali 2</image:caption>
+            <image:title>Big Brother VIP Albania Live Stream 24/7 - Shiko Online Falas</image:title>
+            <image:caption>Shiko Big Brother VIP Albania live stream 24/7 falas. Transmetim live në Kanali 1 dhe Kanali 2. Big Brother VIP Albania online, BBVIP Albania live, Big Brother Albania 2025</image:caption>
             <image:geo_location>Albania</image:geo_location>
             <image:license>https://www.bigbrothervipalbania.com/terms-of-service.html</image:license>
         </image:image>
@@ -39,8 +39,8 @@
         <!-- Video: Kanali 1 -->
         <video:video>
             <video:thumbnail_loc>https://www.bigbrothervipalbania.com/images/kanali1-thumb.jpg</video:thumbnail_loc>
-            <video:title>Big Brother VIP Albania - Kanali 1 Transmetim Live</video:title>
-            <video:description>Shiko Big Brother VIP Albania live stream në Kanali 1. Akses 24/7 në transmetimin e shtëpisë. Shiko të gjithë banorët në kohë reale.</video:description>
+            <video:title>Big Brother VIP Albania Live Stream - Kanali 1 | Shiko Online Falas 24/7</video:title>
+            <video:description>Shiko Big Brother VIP Albania live stream në Kanali 1 falas. Transmetim live 24/7 në shtëpinë e Big Brother VIP Albania. Akses i plotë në të gjitha aktivitetet, eliminimet dhe momentet më të bukura. Big Brother VIP Albania online tani!</video:description>
             <video:content_loc>https://www.bigbrothervipalbania.com/#live</video:content_loc>
             <video:player_loc allow_embed="yes">https://www.bigbrothervipalbania.com/player/kanali1</video:player_loc>
             <video:duration>86400</video:duration>
@@ -52,18 +52,25 @@
             <video:requires_subscription>no</video:requires_subscription>
             <video:uploader info="https://www.bigbrothervipalbania.com/">Big Brother VIP Albania</video:uploader>
             <video:live>yes</video:live>
-            <video:tag>Big Brother</video:tag>
-            <video:tag>Albania</video:tag>
-            <video:tag>Emision Realitet</video:tag>
-            <video:tag>Transmetim Live</video:tag>
-            <video:tag>Kanali 1</video:tag>
+            <video:tag>Big Brother VIP Albania</video:tag>
+            <video:tag>Big Brother Albania</video:tag>
+            <video:tag>BBVIP Albania</video:tag>
+            <video:tag>Big Brother VIP Albania Live</video:tag>
+            <video:tag>Big Brother Albania Live Stream</video:tag>
+            <video:tag>Shiko Big Brother VIP Albania</video:tag>
+            <video:tag>Big Brother VIP Albania Online</video:tag>
+            <video:tag>Emision Realitet Shqipëri</video:tag>
+            <video:tag>Transmetim Live 24/7</video:tag>
+            <video:tag>Kanali 1 Big Brother</video:tag>
+            <video:tag>Big Brother VIP Albania 2025</video:tag>
+            <video:tag>Big Brother Albania Falas</video:tag>
             <video:category>Entertainment</video:category>
         </video:video>
         <!-- Video: Kanali 2 -->
         <video:video>
             <video:thumbnail_loc>https://www.bigbrothervipalbania.com/images/kanali2-thumb.jpg</video:thumbnail_loc>
-            <video:title>Big Brother VIP Albania - Kanali 2 Transmetim Live</video:title>
-            <video:description>Shiko Big Brother VIP Albania live stream në Kanali 2. Akses 24/7 në transmetimin e shtëpisë. Shiko të gjithë banorët në kohë reale.</video:description>
+            <video:title>Big Brother VIP Albania Live Stream - Kanali 2 | Shiko Online Falas 24/7</video:title>
+            <video:description>Shiko Big Brother VIP Albania live stream në Kanali 2 falas. Transmetim live 24/7 në shtëpinë e Big Brother VIP Albania. Akses i plotë në të gjitha aktivitetet, eliminimet dhe momentet më të bukura. Big Brother VIP Albania online tani!</video:description>
             <video:content_loc>https://www.bigbrothervipalbania.com/#live</video:content_loc>
             <video:player_loc allow_embed="yes">https://www.bigbrothervipalbania.com/player/kanali2</video:player_loc>
             <video:duration>86400</video:duration>
@@ -75,11 +82,18 @@
             <video:requires_subscription>no</video:requires_subscription>
             <video:uploader info="https://www.bigbrothervipalbania.com/">Big Brother VIP Albania</video:uploader>
             <video:live>yes</video:live>
-            <video:tag>Big Brother</video:tag>
-            <video:tag>Albania</video:tag>
-            <video:tag>Emision Realitet</video:tag>
-            <video:tag>Transmetim Live</video:tag>
-            <video:tag>Kanali 2</video:tag>
+            <video:tag>Big Brother VIP Albania</video:tag>
+            <video:tag>Big Brother Albania</video:tag>
+            <video:tag>BBVIP Albania</video:tag>
+            <video:tag>Big Brother VIP Albania Live</video:tag>
+            <video:tag>Big Brother Albania Live Stream</video:tag>
+            <video:tag>Shiko Big Brother VIP Albania</video:tag>
+            <video:tag>Big Brother VIP Albania Online</video:tag>
+            <video:tag>Emision Realitet Shqipëri</video:tag>
+            <video:tag>Transmetim Live 24/7</video:tag>
+            <video:tag>Kanali 2 Big Brother</video:tag>
+            <video:tag>Big Brother VIP Albania 2025</video:tag>
+            <video:tag>Big Brother Albania Falas</video:tag>
             <video:category>Entertainment</video:category>
         </video:video>
     </url>
@@ -91,7 +105,7 @@
     <!-- Live Stream Main Section -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/#live</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>hourly</changefreq>
         <priority>0.95</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://www.bigbrothervipalbania.com/#live"/>
@@ -106,7 +120,7 @@
     <!-- Kanali 1 Dedicated Page -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/kanali-1</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>hourly</changefreq>
         <priority>0.9</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://www.bigbrothervipalbania.com/kanali-1"/>
@@ -134,7 +148,7 @@
     <!-- Kanali 2 Dedicated Page -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/kanali-2</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>hourly</changefreq>
         <priority>0.9</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://www.bigbrothervipalbania.com/kanali-2"/>
@@ -166,7 +180,7 @@
     <!-- Contestants Section -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/#contestants</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.85</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://www.bigbrothervipalbania.com/#contestants"/>
@@ -181,7 +195,7 @@
     <!-- Schedule Section -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/#schedule</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://www.bigbrothervipalbania.com/#schedule"/>
@@ -196,7 +210,7 @@
     <!-- News Section -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/#news</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.85</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://www.bigbrothervipalbania.com/#news"/>
@@ -215,7 +229,7 @@
     <!-- Privacy Policy -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/privacy-policy.html</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://www.bigbrothervipalbania.com/privacy-policy.html"/>
@@ -225,7 +239,7 @@
     <!-- Terms of Service -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/terms-of-service.html</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://www.bigbrothervipalbania.com/terms-of-service.html"/>
@@ -239,7 +253,7 @@
     <!-- About Page -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/about.html</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
         <image:image>
@@ -252,7 +266,7 @@
     <!-- Contact Page -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/contact.html</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -260,7 +274,7 @@
     <!-- FAQ Page -->
     <url>
         <loc>https://www.bigbrothervipalbania.com/faq.html</loc>
-        <lastmod>2025-12-15</lastmod>
+        <lastmod>2025-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>

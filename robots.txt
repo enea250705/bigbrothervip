@@ -1,6 +1,13 @@
-# robots.txt for Big Brother VIP Albania
+# robots.txt for Big Brother VIP Albania - Optimized for Maximum SEO
+# Big Brother VIP Albania, BBVIP Albania, Big Brother Albania Live Stream
 User-agent: *
 Allow: /
+Allow: /index.html
+Allow: /#live
+Allow: /#news
+Allow: /images/
+Allow: /styles.css
+Allow: /script.js
 
 # Allow all search engines
 User-agent: Googlebot
