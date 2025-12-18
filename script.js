@@ -210,35 +210,6 @@ function updateViewerCounts() {
 
 setInterval(updateViewerCounts, 5000);
 
-// Sample Contestants Data
-const contestants = [
-    { name: 'Ardit Gjebrea', age: 35, status: 'active', emoji: '👨' },
-    { name: 'Lori Hoxha', age: 28, status: 'active', emoji: '👩' },
-    { name: 'Ermal Mamaqi', age: 32, status: 'active', emoji: '👨' },
-    { name: 'Kledi Kadiu', age: 30, status: 'active', emoji: '👨' },
-    { name: 'Eranda Libohova', age: 27, status: 'active', emoji: '👩' },
-    { name: 'Suela Mema', age: 29, status: 'active', emoji: '👩' },
-    { name: 'Albana Osmani', age: 26, status: 'evicted', emoji: '👩' },
-    { name: 'Genti Lako', age: 33, status: 'evicted', emoji: '👨' },
-];
-
-// Load Contestants
-function loadContestants() {
-    const contestantsGrid = document.getElementById('contestantsGrid');
-    contestantsGrid.innerHTML = contestants.map(contestant => `
-        <div class="contestant-card">
-            <div class="contestant-image">${contestant.emoji}</div>
-            <div class="contestant-info">
-                <div class="contestant-name">${contestant.name}</div>
-                <div class="contestant-age">Mosha: ${contestant.age}</div>
-                <span class="contestant-status status-${contestant.status}">
-                    ${contestant.status === 'active' ? 'NË SHTËPI' : 'ELIMINUAR'}
-                </span>
-            </div>
-        </div>
-    `).join('');
-}
-
 // Sample Schedule Data
 const schedule = [
     { time: '09:00', title: 'Zgjohet në Mëngjes', description: 'Banorët zgjohen dhe fillojnë ditën e tyre' },
@@ -320,7 +291,6 @@ function loadNews() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    loadContestants();
     loadSchedule();
     loadNews();
     
