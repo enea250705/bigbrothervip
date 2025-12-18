@@ -23,7 +23,7 @@ Allow: /
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://www.bigbrothervipalbania.com/sitemap.xml
+Sitemap: https://bigbrothervipalbania.stream/sitemap.xml
 
 # Disallow admin and private areas (if any)
 Disallow: /admin/

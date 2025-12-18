@@ -10,38 +10,35 @@
     
     <!-- Homepage - Main Entry Point -->
     <url>
-        <loc>https://www.bigbrothervipalbania.com/</loc>
+        <loc>https://bigbrothervipalbania.stream/</loc>
         <lastmod>2025-12-19</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
         <!-- Images -->
         <image:image>
-            <image:loc>https://www.bigbrothervipalbania.com/images/og-image.jpg</image:loc>
+            <image:loc>https://bigbrothervipalbania.stream/images/og-image.jpg</image:loc>
             <image:title>Big Brother VIP Albania Live Stream 24/7 - Shiko Online Falas</image:title>
             <image:caption>Shiko Big Brother VIP Albania live stream 24/7 falas. Transmetim live në Kanali 1 dhe Kanali 2. Big Brother VIP Albania online, BBVIP Albania live, Big Brother Albania 2025</image:caption>
             <image:geo_location>Albania</image:geo_location>
-            <image:license>https://www.bigbrothervipalbania.com/terms-of-service.html</image:license>
+            <image:license>https://bigbrothervipalbania.stream/terms-of-service.html</image:license>
         </image:image>
         <image:image>
-            <image:loc>https://www.bigbrothervipalbania.com/images/logobbv.webp</image:loc>
+            <image:loc>https://bigbrothervipalbania.stream/images/logobbv.webp</image:loc>
             <image:title>Logo Big Brother VIP Albania</image:title>
             <image:caption>Logo zyrtare Big Brother VIP Albania - BBVIP Albania</image:caption>
         </image:image>
         <!-- Video: Kanali 1 -->
         <video:video>
-            <video:thumbnail_loc>https://www.bigbrothervipalbania.com/images/kanali1-thumb.jpg</video:thumbnail_loc>
+            <video:thumbnail_loc>https://bigbrothervipalbania.stream/images/kanali1-thumb.jpg</video:thumbnail_loc>
             <video:title>Big Brother VIP Albania Live Stream - Kanali 1 | Shiko Online Falas 24/7</video:title>
             <video:description>Shiko Big Brother VIP Albania live stream në Kanali 1 falas. Transmetim live 24/7 në shtëpinë e Big Brother VIP Albania. Akses i plotë në të gjitha aktivitetet, eliminimet dhe momentet më të bukura. Big Brother VIP Albania online tani!</video:description>
-            <video:content_loc>https://www.bigbrothervipalbania.com/</video:content_loc>
-            <video:player_loc allow_embed="yes">https://www.bigbrothervipalbania.com/</video:player_loc>
-            <video:duration>86400</video:duration>
             <video:publication_date>2025-12-01T00:00:00+00:00</video:publication_date>
             <video:expiration_date>2026-12-31T23:59:59+00:00</video:expiration_date>
             <video:rating>4.8</video:rating>
             <video:view_count>1250000</video:view_count>
             <video:family_friendly>yes</video:family_friendly>
             <video:requires_subscription>no</video:requires_subscription>
-            <video:uploader info="https://www.bigbrothervipalbania.com/">Big Brother VIP Albania</video:uploader>
+            <video:uploader info="https://bigbrothervipalbania.stream/">Big Brother VIP Albania</video:uploader>
             <video:live>yes</video:live>
             <video:tag>Big Brother VIP Albania</video:tag>
             <video:tag>Big Brother Albania</video:tag>
@@ -59,19 +56,16 @@
         </video:video>
         <!-- Video: Kanali 2 -->
         <video:video>
-            <video:thumbnail_loc>https://www.bigbrothervipalbania.com/images/kanali2-thumb.jpg</video:thumbnail_loc>
+            <video:thumbnail_loc>https://bigbrothervipalbania.stream/images/kanali2-thumb.jpg</video:thumbnail_loc>
             <video:title>Big Brother VIP Albania Live Stream - Kanali 2 | Shiko Online Falas 24/7</video:title>
             <video:description>Shiko Big Brother VIP Albania live stream në Kanali 2 falas. Transmetim live 24/7 në shtëpinë e Big Brother VIP Albania. Akses i plotë në të gjitha aktivitetet, eliminimet dhe momentet më të bukura. Big Brother VIP Albania online tani!</video:description>
-            <video:content_loc>https://www.bigbrothervipalbania.com/</video:content_loc>
-            <video:player_loc allow_embed="yes">https://www.bigbrothervipalbania.com/</video:player_loc>
-            <video:duration>86400</video:duration>
             <video:publication_date>2025-12-01T00:00:00+00:00</video:publication_date>
             <video:expiration_date>2026-12-31T23:59:59+00:00</video:expiration_date>
             <video:rating>4.8</video:rating>
             <video:view_count>980000</video:view_count>
             <video:family_friendly>yes</video:family_friendly>
             <video:requires_subscription>no</video:requires_subscription>
-            <video:uploader info="https://www.bigbrothervipalbania.com/">Big Brother VIP Albania</video:uploader>
+            <video:uploader info="https://bigbrothervipalbania.stream/">Big Brother VIP Albania</video:uploader>
             <video:live>yes</video:live>
             <video:tag>Big Brother VIP Albania</video:tag>
             <video:tag>Big Brother Albania</video:tag>
@@ -99,7 +93,7 @@
     
     <!-- Privacy Policy -->
     <url>
-        <loc>https://www.bigbrothervipalbania.com/privacy-policy.html</loc>
+        <loc>https://bigbrothervipalbania.stream/privacy-policy.html</loc>
         <lastmod>2025-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
@@ -107,7 +101,7 @@
     
     <!-- Terms of Service -->
     <url>
-        <loc>https://www.bigbrothervipalbania.com/terms-of-service.html</loc>
+        <loc>https://bigbrothervipalbania.stream/terms-of-service.html</loc>
         <lastmod>2025-12-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.3</priority>
