@@ -210,57 +210,95 @@ function updateViewerCounts() {
 
 setInterval(updateViewerCounts, 5000);
 
-// Sample News Data
-const news = [
-    {
-        date: '2025-12-15',
-        title: 'Banor i Ri Hyn në Shtëpi',
-        excerpt: 'Një banor i ri surprizë ka hyrë në shtëpinë e Big Brother VIP Albania, duke shkaktuar ndryshime dinamike...'
-    },
-    {
-        date: '2025-12-14',
-        title: 'Drama e Eliminimit',
-        excerpt: 'Eliminimi i natës së kaluar ishte plot tension pasi dy banorë u përballën me votën e publikut...'
-    },
-    {
-        date: '2025-12-13',
-        title: 'Romancë në Shtëpi',
-        excerpt: 'Dy banorë kanë filluar t\'i afrohen njëri-tjetrit, duke shkaktuar thashetheme për një romancë të mundshme...'
-    },
-    {
-        date: '2025-12-12',
-        title: 'Big Brother Shpall Sfidë të Re',
-        excerpt: 'Një sfidë e re javore është shpallur që do të testojë forcën fizike dhe mendore të banorëve...'
-    },
-    {
-        date: '2025-12-11',
-        title: 'Numri i Shikuesve Thye Rekorde',
-        excerpt: 'Big Brother VIP Albania ka arritur numra rekord shikuesish këtë sezon...'
-    },
-    {
-        date: '2025-12-10',
-        title: 'Banor Zbulon Sekret Të Shokueshëm',
-        excerpt: 'Gjatë një bisede në orët e vona, një banor zbuloi një sekret që i la të tjerët pa fjalë...'
-    },
-];
+// News Data (empty for now)
+const news = [];
+
+// Clips Data (empty for now)
+const clips = [];
 
 // Load News
 function loadNews() {
     const newsGrid = document.getElementById('newsGrid');
-    newsGrid.innerHTML = news.map(item => `
-        <div class="news-card">
-            <div class="news-image"></div>
-            <div class="news-content">
-                <div class="news-date">${new Date(item.date).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                })}</div>
-                <div class="news-title">${item.title}</div>
-                <div class="news-excerpt">${item.excerpt}</div>
+    if (news.length === 0) {
+        newsGrid.innerHTML = '<p style="text-align: center; color: var(--text-gray); font-size: 18px; grid-column: 1 / -1;">Nuk ka lajme për momentin.</p>';
+    } else {
+        newsGrid.innerHTML = news.map(item => `
+            <div class="news-card">
+                <div class="news-image"></div>
+                <div class="news-content">
+                    <div class="news-date">${new Date(item.date).toLocaleDateString('sq-AL', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}</div>
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-excerpt">${item.excerpt}</div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
+}
+
+// Load Clips
+function loadClips() {
+    const clipsGrid = document.getElementById('clipsGrid');
+    if (clips.length === 0) {
+        clipsGrid.innerHTML = '<p style="text-align: center; color: var(--text-gray); font-size: 18px; grid-column: 1 / -1;">Nuk ka klipa për momentin.</p>';
+    } else {
+        clipsGrid.innerHTML = clips.map(item => `
+            <div class="news-card">
+                <div class="news-image" style="position: relative;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(0, 51, 160, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="news-content">
+                    <div class="news-date">${new Date(item.date).toLocaleDateString('sq-AL', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}</div>
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-excerpt">${item.excerpt || ''}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// News/Clips Tab Switching
+function initNewsTabs() {
+    const tabs = document.querySelectorAll('.news-tabs .channel-tab');
+    const newsGrid = document.getElementById('newsGrid');
+    const clipsGrid = document.getElementById('clipsGrid');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabType = tab.getAttribute('data-tab');
+            
+            // Update active tab
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                t.style.background = 'rgba(26, 26, 26, 0.8)';
+                t.style.borderColor = 'rgba(0, 51, 160, 0.3)';
+            });
+            tab.classList.add('active');
+            tab.style.background = 'var(--primary-blue)';
+            tab.style.borderColor = 'var(--primary-blue)';
+            tab.style.boxShadow = '0 5px 20px rgba(0, 51, 160, 0.5)';
+            
+            // Show/hide grids
+            if (tabType === 'news') {
+                newsGrid.style.display = 'grid';
+                clipsGrid.style.display = 'none';
+            } else {
+                newsGrid.style.display = 'none';
+                clipsGrid.style.display = 'grid';
+            }
+        });
+    });
 }
 
 // Countdown Timer - 20 Dhjetor 2025, ora 21:00
@@ -304,6 +342,8 @@ function startCountdown() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     loadNews();
+    loadClips();
+    initNewsTabs();
     
     // Start countdown timer
     startCountdown();
