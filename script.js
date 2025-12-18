@@ -221,23 +221,24 @@ function loadNews() {
         newsGrid.innerHTML = news.map(item => {
             const mediaElement = item.mediaUrl ? 
                 (item.mediaType && item.mediaType.startsWith('video/') || item.mediaUrl.includes('.mp4') || item.mediaUrl.includes('.webm') || item.mediaUrl.includes('.mov') ?
-                    `<video style="width: 100%; height: 200px; object-fit: cover;" controls><source src="${item.mediaUrl}" type="video/mp4"></video>` :
-                    `<img src="${item.mediaUrl}" style="width: 100%; height: 200px; object-fit: cover;" alt="${item.title}">`) :
+                    `<video style="width: 100%; height: 200px; object-fit: cover;" controls preload="metadata" width="350" height="200"><source src="${item.mediaUrl}" type="video/mp4"></video>` :
+                    `<img src="${item.mediaUrl}" style="width: 100%; height: 200px; object-fit: cover;" alt="${item.title}" loading="lazy" width="350" height="200">`) :
                 `<div class="news-image"></div>`;
             
             return `
-                <div class="news-card">
+                <article class="news-card" itemscope itemtype="https://schema.org/NewsArticle">
                     ${mediaElement}
                     <div class="news-content">
-                        <div class="news-date">${new Date(item.date).toLocaleDateString('sq-AL', { 
+                        <time class="news-date" datetime="${item.date}" itemprop="datePublished">${new Date(item.date).toLocaleDateString('sq-AL', { 
                             year: 'numeric', 
                             month: 'long', 
                             day: 'numeric' 
-                        })}</div>
-                        <div class="news-title">${item.title}</div>
-                        <div class="news-excerpt">${item.excerpt}</div>
+                        })}</time>
+                        <h3 class="news-title" itemprop="headline">${item.title}</h3>
+                        <div class="news-excerpt" itemprop="description">${item.excerpt}</div>
+                        ${item.mediaUrl ? `<meta itemprop="image" content="${item.mediaUrl}">` : ''}
                     </div>
-                </div>
+                </article>
             `;
         }).join('');
     }
@@ -254,8 +255,8 @@ function loadClips() {
         clipsGrid.innerHTML = clips.map(item => {
             const mediaElement = item.mediaUrl ? 
                 (item.mediaType && item.mediaType.startsWith('video/') || item.mediaUrl.includes('.mp4') || item.mediaUrl.includes('.webm') || item.mediaUrl.includes('.mov') || item.mediaUrl.startsWith('data:video/') ?
-                    `<video style="width: 100%; height: 200px; object-fit: cover;" controls><source src="${item.mediaUrl}" type="video/mp4"></video>` :
-                    `<img src="${item.mediaUrl}" style="width: 100%; height: 200px; object-fit: cover;" alt="${item.title}">`) :
+                    `<video style="width: 100%; height: 200px; object-fit: cover;" controls preload="metadata" width="350" height="200" itemprop="contentUrl"><source src="${item.mediaUrl}" type="video/mp4"></video>` :
+                    `<img src="${item.mediaUrl}" style="width: 100%; height: 200px; object-fit: cover;" alt="${item.title}" loading="lazy" width="350" height="200" itemprop="thumbnailUrl">`) :
                 `<div class="news-image" style="position: relative;">
                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(0, 51, 160, 0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
                         <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
@@ -265,18 +266,19 @@ function loadClips() {
                 </div>`;
             
             return `
-                <div class="news-card">
+                <article class="news-card" itemscope itemtype="https://schema.org/VideoObject">
                     ${mediaElement}
                     <div class="news-content">
-                        <div class="news-date">${new Date(item.date).toLocaleDateString('sq-AL', { 
+                        <time class="news-date" datetime="${item.date}" itemprop="uploadDate">${new Date(item.date).toLocaleDateString('sq-AL', { 
                             year: 'numeric', 
                             month: 'long', 
                             day: 'numeric' 
-                        })}</div>
-                        <div class="news-title">${item.title}</div>
-                        <div class="news-excerpt">${item.excerpt || ''}</div>
+                        })}</time>
+                        <h3 class="news-title" itemprop="name">${item.title}</h3>
+                        ${item.excerpt ? `<div class="news-excerpt" itemprop="description">${item.excerpt}</div>` : ''}
+                        ${item.mediaUrl ? `<meta itemprop="contentUrl" content="${item.mediaUrl}"><meta itemprop="thumbnailUrl" content="${item.mediaUrl}">` : ''}
                     </div>
-                </div>
+                </article>
             `;
         }).join('');
     }
