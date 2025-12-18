@@ -1,43 +1,8 @@
-# robots.txt for Big Brother VIP Albania - Optimized for Maximum SEO
-# Big Brother VIP Albania, BBVIP Albania, Big Brother Albania Live Stream
-
 User-agent: *
 Allow: /
-Allow: /index.html
-Allow: /images/
-Allow: /styles.css
-Allow: /script.js
-
-# Allow all search engines
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Slurp
-Allow: /
-Crawl-delay: 1
-
-# Disallow admin and private areas
 Disallow: /admin/
 Disallow: /private/
 Disallow: /*.json$
 Disallow: /api/
 
-# Allow CSS and JS for proper rendering
-Allow: /styles.css
-Allow: /script.js
-Allow: /*.css$
-Allow: /*.js$
-Allow: /*.jpg$
-Allow: /*.jpeg$
-Allow: /*.png$
-Allow: /*.gif$
-Allow: /*.svg$
-Allow: /*.webp$
-
-# Sitemap location
 Sitemap: https://bigbrothervipalbania.stream/sitemap.xml
