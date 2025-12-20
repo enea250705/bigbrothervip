@@ -124,15 +124,15 @@ if (typeof firebase === 'undefined') {
             return;
         }
         
-        // Create modal (no close button, cannot click outside)
+        // Create modal (can be closed, but message won't send without username)
         modal = document.createElement('div');
         modal.id = 'usernamePickerModal';
         modal.className = 'username-modal';
         modal.innerHTML = `
             <div class="username-modal-content">
-                <h2>⚠️ Emri Kërkohet për Chat</h2>
+                <h2>💬 Zgjidhni Emrin për Chat</h2>
                 <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 14px;">
-                    Duhet të zgjidhni një emër për të marrë pjesë në chat. Ky emër do të ruhet dhe do të përdoret përsëri kur të ktheheni.
+                    Duhet të zgjidhni një emër për të dërguar mesazhe. Ky emër do të ruhet dhe do të përdoret përsëri kur të ktheheni.
                 </p>
                 <input type="text" 
                        id="usernameInput" 
@@ -142,10 +142,11 @@ if (typeof firebase === 'undefined') {
                        autocomplete="off"
                        required>
                 <div class="username-actions">
-                    <button class="username-submit-btn" onclick="submitUsername()">Hyr në Chat</button>
+                    <button class="username-submit-btn" onclick="submitUsername()">Vazhdo</button>
+                    <button class="username-cancel-btn" onclick="closeUsernameModal()" style="margin-top: 10px; background: transparent; color: var(--text-gray); border: 1px solid var(--text-gray); padding: 8px 16px; border-radius: 4px; cursor: pointer; width: 100%;">Anulo</button>
                 </div>
                 <p style="color: var(--text-gray); font-size: 12px; margin-top: 15px; text-align: center;">
-                    <strong>Obligative:</strong> Emri duhet të jetë midis 2-20 karaktereve
+                    Emri duhet të jetë midis 2-20 karaktereve
                 </p>
             </div>
         `;
