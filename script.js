@@ -73,10 +73,15 @@ channelTabs.forEach(tab => {
     });
 });
 
-// Video Player Functionality for Both Channels
-const videoPlayers = {
-    1: { element: null, isPlaying: false, isMuted: false },
-    2: { element: null, isPlaying: false, isMuted: false }
+// Single Video Player - Switches between channels
+let currentChannel = 1; // Default to Kanali 1
+const mainVideoPlayer = {
+    element: null,
+    isPlaying: false,
+    isMuted: false,
+    videoElement: null,
+    iframeElement: null,
+    streamType: null
 };
 
 // ============================================
@@ -149,9 +154,14 @@ function initializeVideoPlayer(channelNum) {
 }
 
 function startStream(channelNum) {
-    if (videoPlayers[channelNum].isPlaying) return;
+    // Use current channel if not specified
+    if (!channelNum) channelNum = currentChannel;
     
-    const videoPlayer = videoPlayers[channelNum].element;
+    if (mainVideoPlayer.isPlaying && currentChannel === channelNum) return;
+    
+    const videoPlayer = mainVideoPlayer.element;
+    if (!videoPlayer) return;
+    
     const streamUrl = streamUrls[channelNum];
     
     if (!streamUrl) {
@@ -175,7 +185,7 @@ function startStream(channelNum) {
         // For iframe embeds (YouTube, Twitch, custom players)
         playerHTML = `
             <iframe 
-                id="iframe${channelNum}"
+                id="mainIframe"
                 width="100%" 
                 height="100%" 
                 src="${streamUrl}" 
@@ -185,46 +195,48 @@ function startStream(channelNum) {
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
             ></iframe>
             <div class="video-controls">
-                <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
-                <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
+                <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
+                <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
             </div>
         `;
     } else if (streamType === 'hls') {
         // For HLS streams (.m3u8) - requires hls.js library
         playerHTML = `
             <video 
-                id="video${channelNum}"
+                id="mainVideo"
                 width="100%" 
                 height="100%" 
                 controls
-                autoplay
+                preload="auto"
+                playsinline
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
             >
                 <source src="${streamUrl}" type="application/x-mpegURL">
                 Shfletuesi juaj nuk mbështet HLS streams.
             </video>
             <div class="video-controls">
-                <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
-                <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
+                <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
+                <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
             </div>
         `;
     } else if (streamType === 'dash') {
         // For DASH streams (.mpd) - requires dash.js library
         playerHTML = `
             <video 
-                id="video${channelNum}"
+                id="mainVideo"
                 width="100%" 
                 height="100%" 
                 controls
-                autoplay
+                preload="auto"
+                playsinline
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
             >
                 <source src="${streamUrl}" type="application/dash+xml">
                 Shfletuesi juaj nuk mbështet DASH streams.
             </video>
             <div class="video-controls">
-                <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
-                <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
+                <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
+                <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
             </div>
         `;
     } else {
@@ -234,7 +246,7 @@ function startStream(channelNum) {
         
         playerHTML = `
             <video 
-                id="video${channelNum}"
+                id="mainVideo"
                 width="100%" 
                 height="100%" 
                 controls
@@ -246,47 +258,43 @@ function startStream(channelNum) {
                 Shfletuesi juaj nuk mbështet video HTML5.
             </video>
             <div class="video-controls">
-                <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
-                <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
+                <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
+                <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
             </div>
         `;
     }
     
     videoPlayer.innerHTML = playerHTML;
-    videoPlayers[channelNum].isPlaying = true;
-    videoPlayers[channelNum].streamType = streamType;
+    mainVideoPlayer.isPlaying = true;
+    mainVideoPlayer.streamType = streamType;
+    
+    // Hide overlay
+    const overlay = videoPlayer.querySelector('.video-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
     
     // Get video/iframe element
-    const video = document.getElementById(`video${channelNum}`);
-    const iframe = document.getElementById(`iframe${channelNum}`);
+    const video = document.getElementById('mainVideo');
+    const iframe = document.getElementById('mainIframe');
     
     // Re-attach event listeners and start video
     setTimeout(() => {
-        const fullscreenBtn = videoPlayer.querySelector(`.fullscreen-btn[data-channel="${channelNum}"]`);
-        const volumeBtn = videoPlayer.querySelector(`.volume-btn[data-channel="${channelNum}"]`);
-        
-        if (fullscreenBtn) {
-            fullscreenBtn.addEventListener('click', () => toggleFullscreen(channelNum));
-        }
-        if (volumeBtn) {
-            volumeBtn.addEventListener('click', () => toggleVolume(channelNum));
-        }
-        
         // Store element reference
         if (video) {
-            videoPlayers[channelNum].videoElement = video;
+            mainVideoPlayer.videoElement = video;
             
             // Explicitly play the video (user interaction allows this)
             video.play().then(() => {
-                console.log(`Video ${channelNum} started playing`);
+                console.log(`Video channel ${channelNum} started playing`);
             }).catch((error) => {
-                console.error(`Error playing video ${channelNum}:`, error);
+                console.error(`Error playing video channel ${channelNum}:`, error);
                 // If autoplay fails, video controls will allow manual play
             });
             
             // Handle video errors
             video.addEventListener('error', (e) => {
-                console.error(`Video ${channelNum} error:`, e);
+                console.error(`Video channel ${channelNum} error:`, e);
                 const error = video.error;
                 if (error) {
                     let errorMsg = 'Gabim në ngarkimin e videos. ';
@@ -312,20 +320,20 @@ function startStream(channelNum) {
             
             // Handle video load
             video.addEventListener('loadeddata', () => {
-                console.log(`Video ${channelNum} loaded successfully`);
+                console.log(`Video channel ${channelNum} loaded successfully`);
             });
         }
         if (iframe) {
-            videoPlayers[channelNum].iframeElement = iframe;
+            mainVideoPlayer.iframeElement = iframe;
         }
     }, 100);
 }
 
-function toggleFullscreen(channelNum) {
-    const videoPlayer = videoPlayers[channelNum].element;
-    const streamType = videoPlayers[channelNum].streamType || 'video';
-    const video = videoPlayers[channelNum].videoElement || videoPlayer.querySelector(`#video${channelNum}`);
-    const iframe = videoPlayers[channelNum].iframeElement || videoPlayer.querySelector(`#iframe${channelNum}`);
+function toggleFullscreen() {
+    const videoPlayer = mainVideoPlayer.element;
+    const streamType = mainVideoPlayer.streamType || 'video';
+    const video = mainVideoPlayer.videoElement || videoPlayer.querySelector('#mainVideo');
+    const iframe = mainVideoPlayer.iframeElement || videoPlayer.querySelector('#mainIframe');
     const videoWrapper = videoPlayer.closest('.video-wrapper');
     
     // Handle fullscreen based on stream type
@@ -355,13 +363,13 @@ function toggleFullscreen(channelNum) {
     }
 }
 
-function toggleVolume(channelNum) {
-    videoPlayers[channelNum].isMuted = !videoPlayers[channelNum].isMuted;
-    const videoPlayer = videoPlayers[channelNum].element;
-    const streamType = videoPlayers[channelNum].streamType || 'video';
-    const video = videoPlayers[channelNum].videoElement || videoPlayer.querySelector(`#video${channelNum}`);
-    const iframe = videoPlayers[channelNum].iframeElement || videoPlayer.querySelector(`#iframe${channelNum}`);
-    const volumeBtn = videoPlayer.querySelector(`.volume-btn[data-channel="${channelNum}"]`);
+function toggleVolume() {
+    mainVideoPlayer.isMuted = !mainVideoPlayer.isMuted;
+    const videoPlayer = mainVideoPlayer.element;
+    const streamType = mainVideoPlayer.streamType || 'video';
+    const video = mainVideoPlayer.videoElement || videoPlayer.querySelector('#mainVideo');
+    const iframe = mainVideoPlayer.iframeElement || videoPlayer.querySelector('#mainIframe');
+    const volumeBtn = document.getElementById('mainVolumeBtn');
     
     // Handle volume based on stream type
     if (streamType === 'iframe') {
@@ -370,11 +378,11 @@ function toggleVolume(channelNum) {
         console.log('Volume control for iframe embeds is limited');
     } else if (video) {
         // For video elements (file, HLS, DASH)
-        video.muted = videoPlayers[channelNum].isMuted;
+        video.muted = mainVideoPlayer.isMuted;
     }
     
     if (volumeBtn) {
-        volumeBtn.textContent = videoPlayers[channelNum].isMuted ? '🔇' : '🔊';
+        volumeBtn.textContent = mainVideoPlayer.isMuted ? '🔇' : '🔊';
     }
 }
 

@@ -273,11 +273,30 @@
                 </p>
             </div>
             
-            <!-- Kanali 1 -->
-            <div class="stream-container" id="kanali1Container">
+            <!-- Single Stream Container with Channel Selection -->
+            <div class="stream-container" id="mainStreamContainer">
+                <!-- Channel Selection Tabs -->
+                <div class="channel-tabs-container">
+                    <button class="channel-tab-btn active" data-channel="1" id="channelTab1">
+                        <span>Kanali 1</span>
+                        <div class="live-indicator-small">
+                            <span class="live-dot"></span>
+                            <span class="live-text">LIVE</span>
+                        </div>
+                    </button>
+                    <button class="channel-tab-btn" data-channel="2" id="channelTab2">
+                        <span>Kanali 2</span>
+                        <div class="live-indicator-small">
+                            <span class="live-dot"></span>
+                            <span class="live-text">LIVE</span>
+                        </div>
+                    </button>
+                </div>
+                
+                <!-- Stream Header -->
                 <div class="stream-header">
                     <div class="channel-label">
-                        <span class="channel-number">KANALI 1</span>
+                        <span class="channel-number" id="currentChannelName">KANALI 1</span>
                         <div class="live-indicator">
                             <span class="live-dot"></span>
                             <span class="live-text">LIVE TANI</span>
@@ -285,57 +304,25 @@
                     </div>
                     <div class="viewer-count">
                         <span class="viewer-icon">👁</span>
-                        <span id="viewerCount1">8,234</span> po shikojnë
+                        <span id="currentViewerCount">0</span> po shikojnë
                     </div>
                 </div>
+                
+                <!-- Single Video Player -->
                 <div class="video-wrapper">
-                    <div class="video-placeholder" id="videoPlayer1">
+                    <div class="video-placeholder" id="mainVideoPlayer">
                         <div class="video-overlay">
-                            <div class="play-button" data-channel="1">
+                            <div class="play-button" id="mainPlayButton">
                                 <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
                                     <circle cx="40" cy="40" r="40" fill="rgba(255, 255, 255, 0.9)"/>
                                     <path d="M32 24L32 56L56 40L32 24Z" fill="#0033A0"/>
                                 </svg>
                             </div>
-                            <p class="stream-message">Kliko për të filluar shikimin e Kanali 1</p>
+                            <p class="stream-message" id="streamMessage">Kliko për të filluar shikimin</p>
                         </div>
                         <div class="video-controls">
-                            <button class="control-btn fullscreen-btn" data-channel="1">⛶</button>
-                            <button class="control-btn volume-btn" data-channel="1">🔊</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kanali 2 -->
-            <div class="stream-container" id="kanali2Container">
-                <div class="stream-header">
-                    <div class="channel-label">
-                        <span class="channel-number">KANALI 2</span>
-                        <div class="live-indicator">
-                            <span class="live-dot"></span>
-                            <span class="live-text">LIVE TANI</span>
-                        </div>
-                    </div>
-                    <div class="viewer-count">
-                        <span class="viewer-icon">👁</span>
-                        <span id="viewerCount2">6,789</span> po shikojnë
-                    </div>
-                </div>
-                <div class="video-wrapper">
-                    <div class="video-placeholder" id="videoPlayer2">
-                        <div class="video-overlay">
-                            <div class="play-button" data-channel="2">
-                                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-                                    <circle cx="40" cy="40" r="40" fill="rgba(255, 255, 255, 0.9)"/>
-                                    <path d="M32 24L32 56L56 40L32 24Z" fill="#0033A0"/>
-                                </svg>
-                            </div>
-                            <p class="stream-message">Kliko për të filluar shikimin e Kanali 2</p>
-                        </div>
-                        <div class="video-controls">
-                            <button class="control-btn fullscreen-btn" data-channel="2">⛶</button>
-                            <button class="control-btn volume-btn" data-channel="2">🔊</button>
+                            <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
+                            <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
                         </div>
                     </div>
                 </div>
