@@ -124,9 +124,10 @@ const streamTypes = {
 function detectStreamType(url) {
     if (!url) return 'video';
     
-    // Check for iframe embed (YouTube, Twitch, etc.)
+    // Check for iframe embed (YouTube, Twitch, OK.ru, etc.)
     if (url.includes('youtube.com') || url.includes('youtu.be') || 
         url.includes('twitch.tv') || url.includes('vimeo.com') ||
+        url.includes('ok.ru') || url.includes('odnoklassniki.ru') ||
         url.includes('embed') || url.includes('player')) {
         return 'iframe';
     }
