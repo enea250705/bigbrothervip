@@ -450,11 +450,16 @@ if (typeof firebase === 'undefined') {
         setupViewerCounter() {
             console.log(`Setting up viewer counter for channel ${this.channelNum}`);
             
+            if (!this.viewersRef) {
+                console.error(`viewersRef is null for channel ${this.channelNum}`);
+                return;
+            }
+            
             // Listen for viewer count changes
             this.viewersRef.on('value', (snapshot) => {
                 const viewers = snapshot.val();
                 const count = viewers ? Object.keys(viewers).length : 0;
-                console.log(`Channel ${this.channelNum} viewer count updated:`, count);
+                console.log(`Channel ${this.channelNum} viewer count updated:`, count, viewers);
                 this.updateViewerCount(count);
                 
                 // Also trigger display update
@@ -463,6 +468,14 @@ if (typeof firebase === 'undefined') {
                 }
             }, (error) => {
                 console.error(`Error reading viewer count for channel ${this.channelNum}:`, error);
+            });
+            
+            // Also get initial count immediately
+            this.viewersRef.once('value', (snapshot) => {
+                const viewers = snapshot.val();
+                const count = viewers ? Object.keys(viewers).length : 0;
+                console.log(`Channel ${this.channelNum} initial viewer count:`, count);
+                this.updateViewerCount(count);
             });
         }
         
@@ -498,6 +511,17 @@ if (typeof firebase === 'undefined') {
         // Register as viewer
         registerViewer() {
             console.log(`Registering viewer for channel ${this.channelNum}, userId: ${this.userId}`);
+            
+            if (!this.viewersRef) {
+                console.error(`viewersRef is null for channel ${this.channelNum} - cannot register viewer`);
+                return;
+            }
+            
+            if (!this.userId) {
+                console.error(`userId is null for channel ${this.channelNum} - cannot register viewer`);
+                return;
+            }
+            
             this.userViewerRef = this.viewersRef.child(this.userId);
             this.userViewerRef.set({
                 timestamp: Date.now(),
