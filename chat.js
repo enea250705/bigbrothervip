@@ -2,6 +2,8 @@
 // No backend required - Firebase handles everything (free tier available)
 //
 // SETUP INSTRUCTIONS:
+
+console.log('🔵 chat.js file loaded and executing...');
 // 1. Go to https://console.firebase.google.com/
 // 2. Create a new project (or use existing)
 // 3. Enable "Realtime Database" (not Firestore)
@@ -38,6 +40,10 @@ const isFirebaseConfigured = firebaseConfig.apiKey &&
                              firebaseConfig.apiKey !== "YOUR_API_KEY_HERE";
 
 // Initialize Firebase (only if not already initialized)
+console.log('🔵 Checking Firebase SDK...');
+console.log('🔵 typeof firebase:', typeof firebase);
+console.log('🔵 isFirebaseConfigured:', isFirebaseConfigured);
+
 if (typeof firebase === 'undefined') {
     console.error('❌ Firebase SDK not loaded. Please add Firebase scripts to HTML.');
     console.error('Make sure these scripts are in <head>:');
