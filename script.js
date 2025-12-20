@@ -297,25 +297,32 @@ function stopStream() {
 
 // Update viewer count display
 function updateViewerCountDisplay() {
-    const viewerCount1 = document.getElementById('viewerCount1');
-    const viewerCount2 = document.getElementById('viewerCount2');
     const currentViewerCount = document.getElementById('currentViewerCount');
     
     if (currentViewerCount) {
-        if (currentChannel === 1 && viewerCount1) {
-            currentViewerCount.textContent = viewerCount1.textContent;
-        } else if (currentChannel === 2 && viewerCount2) {
-            currentViewerCount.textContent = viewerCount2.textContent;
+        // Get viewer count from chat system if available
+        if (window.viewerCounts && window.viewerCounts[currentChannel]) {
+            currentViewerCount.textContent = window.viewerCounts[currentChannel].toLocaleString('sq-AL');
         } else {
-            // Fallback to updateViewerCounts values
-            updateViewerCounts();
-            setTimeout(() => {
-                if (currentChannel === 1 && viewerCount1) {
-                    currentViewerCount.textContent = viewerCount1.textContent;
-                } else if (currentChannel === 2 && viewerCount2) {
-                    currentViewerCount.textContent = viewerCount2.textContent;
-                }
-            }, 100);
+            // Fallback to animated counts if Firebase viewer counts not available
+            const viewerCount1 = document.getElementById('viewerCount1');
+            const viewerCount2 = document.getElementById('viewerCount2');
+            
+            if (currentChannel === 1 && viewerCount1) {
+                currentViewerCount.textContent = viewerCount1.textContent;
+            } else if (currentChannel === 2 && viewerCount2) {
+                currentViewerCount.textContent = viewerCount2.textContent;
+            } else {
+                // Final fallback
+                updateViewerCounts();
+                setTimeout(() => {
+                    if (currentChannel === 1 && viewerCount1) {
+                        currentViewerCount.textContent = viewerCount1.textContent;
+                    } else if (currentChannel === 2 && viewerCount2) {
+                        currentViewerCount.textContent = viewerCount2.textContent;
+                    }
+                }, 100);
+            }
         }
     }
 }

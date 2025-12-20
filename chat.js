@@ -449,10 +449,25 @@ if (typeof firebase === 'undefined') {
         
         // Update viewer count display
         updateViewerCount(count) {
+            // Update channel-specific viewer count (if exists)
             const viewerElement = document.getElementById(`viewerCount${this.channelNum}`);
             if (viewerElement) {
                 viewerElement.textContent = count.toLocaleString('sq-AL');
             }
+            
+            // Update current viewer count if this is the active channel
+            const currentViewerCount = document.getElementById('currentViewerCount');
+            if (currentViewerCount) {
+                // Check if this channel is currently active
+                const currentChannel = window.currentChannel || 1;
+                if (this.channelNum === currentChannel) {
+                    currentViewerCount.textContent = count.toLocaleString('sq-AL');
+                }
+            }
+            
+            // Store count for later use
+            window.viewerCounts = window.viewerCounts || {};
+            window.viewerCounts[this.channelNum] = count;
         }
         
         // Register as viewer
