@@ -120,18 +120,33 @@
         document.querySelectorAll('script[data-ad-script="true"], script[src*="quge5.com"]').forEach(quge5Script => {
             if (!isScriptLoaded(quge5Script.src)) {
                 const src = quge5Script.src;
-                const attributes = {};
-                quge5Script.getAttributeNames().forEach(name => {
-                    if (name !== 'src') {
-                        attributes[name] = quge5Script.getAttribute(name);
+                
+                // Check if script is already loading/loaded (has src attribute and is in DOM)
+                if (quge5Script.src && quge5Script.parentNode) {
+                    // Script is already in DOM and has src - let it load naturally
+                    // Just track it without removing/re-adding
+                    if (incrementAdCount()) {
+                        trackAdScript(src);
+                        console.log(`Ad script tracked: ${src} (${getAdCount()}/${MAX_ADS_PER_SESSION} ads this session)`);
+                    } else {
+                        // Limit reached, remove script
+                        quge5Script.remove();
                     }
-                });
-                
-                // Remove the original script
-                quge5Script.remove();
-                
-                // Load conditionally
-                loadAdScript(src, attributes);
+                } else {
+                    // Script not loaded yet, load it conditionally
+                    const attributes = {};
+                    quge5Script.getAttributeNames().forEach(name => {
+                        if (name !== 'src') {
+                            attributes[name] = quge5Script.getAttribute(name);
+                        }
+                    });
+                    
+                    // Remove the original script
+                    quge5Script.remove();
+                    
+                    // Load conditionally
+                    loadAdScript(src, attributes);
+                }
             }
         });
         
@@ -149,9 +164,9 @@
     
     // Initialize immediately (runs as soon as script loads)
     // This ensures we intercept ad scripts before they load
+    // But we need to be careful not to break scripts that are already loading
     if (document.readyState === 'loading') {
-        // If DOM is still loading, wait for it but also try immediately
-        initAds();
+        // If DOM is still loading, wait for it
         document.addEventListener('DOMContentLoaded', initAds);
     } else {
         // DOM already loaded, run immediately
@@ -159,7 +174,7 @@
     }
     
     // Also run after a short delay to catch any scripts that might load later
-    setTimeout(initAds, 100);
+    setTimeout(initAds, 50);
     
     // Monitor for dynamically added ad scripts
     const observer = new MutationObserver(function(mutations) {
