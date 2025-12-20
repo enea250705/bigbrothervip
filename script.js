@@ -95,12 +95,26 @@ const mainVideoPlayer = {
 //    - DASH streams: .mpd
 //    - Iframe embeds: Full URL (will use iframe instead of video element)
 // ============================================
+// ============================================
+// STREAM URLS CONFIGURATION
+// ============================================
+// When you have live streams, replace these URLs:
+// - For HLS streams (.m3u8): Set streamType to 'hls' or 'video'
+// - For DASH streams (.mpd): Set streamType to 'dash' or 'video'
+// - For iframe embeds (YouTube, Twitch, etc.): Set streamType to 'iframe'
+// - For direct video URLs: Set streamType to 'video'
+// 
+// Live streams will automatically use native HTML5 video player
+// with full controls (play, pause, volume, fullscreen, etc.)
+// ============================================
 const streamUrls = {
     1: './ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4', // Kanali 1 - Replace with live stream URL when ready
     2: './ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4'  // Kanali 2 - Replace with live stream URL when ready
 };
 
 // Stream types configuration (auto-detected, but can be manually set)
+// Options: 'video' (native HTML5), 'hls', 'dash', or 'iframe'
+// For live streams, 'video' or 'hls' will use native player with full controls
 const streamTypes = {
     1: 'video', // 'video', 'hls', 'dash', or 'iframe'
     2: 'video'   // 'video', 'hls', 'dash', or 'iframe'
@@ -153,7 +167,8 @@ function initializeMainVideoPlayer() {
         });
     }
     
-    // Control buttons
+    // Control buttons (optional - native video controls are preferred)
+    // These are kept for iframe embeds, but video elements use native controls
     const fullscreenBtn = document.getElementById('mainFullscreenBtn');
     const volumeBtn = document.getElementById('mainVolumeBtn');
     
@@ -163,6 +178,14 @@ function initializeMainVideoPlayer() {
     if (volumeBtn) {
         volumeBtn.addEventListener('click', () => toggleVolume());
     }
+    
+    // Note: For live streams, native video player controls handle:
+    // - Play/Pause
+    // - Volume control
+    // - Fullscreen (double-click or button in controls)
+    // - Seeking (for non-live streams)
+    // - Picture-in-picture
+    // - Playback speed
     
     // Channel tab buttons
     const channelTab1 = document.getElementById('channelTab1');
@@ -395,9 +418,16 @@ function startStream(channelNum) {
             </div>
         `;
     } else {
-        // Default: Video file (.mp4, .webm, .ogg, etc.)
+        // Default: Video file (.mp4, .webm, .ogg, etc.) or Live Stream
+        // For live streams, use native HTML5 video player with full controls
         const videoType = streamUrl.endsWith('.webm') ? 'video/webm' : 
                          streamUrl.endsWith('.ogg') ? 'video/ogg' : 'video/mp4';
+        
+        // Check if it's a live stream URL (common patterns)
+        const isLiveStream = streamUrl.includes('.m3u8') || 
+                            streamUrl.includes('.mpd') || 
+                            streamUrl.includes('live') ||
+                            streamUrl.includes('stream');
         
         playerHTML = `
             <video 
@@ -405,20 +435,18 @@ function startStream(channelNum) {
                 width="100%" 
                 height="100%" 
                 controls
+                controlsList="nodownload"
                 preload="auto"
                 playsinline
-                autoplay
-                loop
+                ${isLiveStream ? '' : 'autoplay loop'}
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
             >
                 <source src="${streamUrl}" type="${videoType}">
                 Shfletuesi juaj nuk mbështet video HTML5.
             </video>
-            <div class="video-controls">
-                <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
-                <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
-            </div>
         `;
+        // Note: Removed custom controls - using native video player controls only
+        // Native controls include: play/pause, volume, fullscreen, seek, etc.
     }
     
     videoPlayer.innerHTML = playerHTML;
@@ -521,31 +549,23 @@ function toggleFullscreen() {
     const streamType = mainVideoPlayer.streamType || 'video';
     const video = mainVideoPlayer.videoElement || videoPlayer.querySelector('#mainVideo');
     const iframe = mainVideoPlayer.iframeElement || videoPlayer.querySelector('#mainIframe');
-    const videoWrapper = videoPlayer.closest('.video-wrapper');
     
-    // Handle fullscreen based on stream type
+    // For live streams, use native fullscreen from video controls
+    // This function is kept for backward compatibility but native controls are preferred
     const elementToFullscreen = streamType === 'iframe' ? iframe : video;
     
     if (elementToFullscreen) {
+        // Use native fullscreen API - video controls also have built-in fullscreen button
         if (elementToFullscreen.requestFullscreen) {
-            elementToFullscreen.requestFullscreen();
+            elementToFullscreen.requestFullscreen().catch(err => {
+                console.log('Fullscreen request failed:', err);
+            });
         } else if (elementToFullscreen.webkitRequestFullscreen) {
             elementToFullscreen.webkitRequestFullscreen();
         } else if (elementToFullscreen.mozRequestFullScreen) {
             elementToFullscreen.mozRequestFullScreen();
         } else if (elementToFullscreen.msRequestFullscreen) {
             elementToFullscreen.msRequestFullscreen();
-        }
-    } else if (videoWrapper) {
-        // Fallback to wrapper fullscreen
-        if (videoWrapper.requestFullscreen) {
-            videoWrapper.requestFullscreen();
-        } else if (videoWrapper.webkitRequestFullscreen) {
-            videoWrapper.webkitRequestFullscreen();
-        } else if (videoWrapper.mozRequestFullScreen) {
-            videoWrapper.mozRequestFullScreen();
-        } else if (videoWrapper.msRequestFullscreen) {
-            videoWrapper.msRequestFullscreen();
         }
     }
 }
