@@ -361,23 +361,30 @@ function startStream(channelNum) {
     // ============================================
     
     if (streamType === 'iframe') {
-        // For iframe embeds (YouTube, Twitch, custom players)
+        // For iframe embeds (YouTube, Twitch, OK.ru, custom players)
+        // Convert OK.ru video URL to embed format if needed
+        let embedUrl = streamUrl;
+        if (streamUrl.includes('ok.ru/video/')) {
+            // OK.ru embed format: https://ok.ru/videoembed/{video_id}
+            const videoId = streamUrl.match(/\/video\/(\d+)/);
+            if (videoId) {
+                embedUrl = `https://ok.ru/videoembed/${videoId[1]}`;
+            }
+        }
+        
         playerHTML = `
             <iframe 
                 id="mainIframe"
                 width="100%" 
                 height="100%" 
-                src="${streamUrl}" 
+                src="${embedUrl}" 
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowfullscreen
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
             ></iframe>
-            <div class="video-controls">
-                <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
-                <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
-            </div>
         `;
+        // Note: OK.ru player has its own controls and fullscreen - no custom controls needed
     } else if (streamType === 'hls') {
         // For HLS streams (.m3u8) - requires hls.js library
         playerHTML = `
