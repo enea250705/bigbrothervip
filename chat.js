@@ -273,10 +273,7 @@ if (typeof firebase === 'undefined') {
             chatContainer.innerHTML = `
                 <div class="chat-header">
                     <h3>💬 Chat Live - Kanali ${this.channelNum}</h3>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="chat-toggle-btn" onclick="toggleChat(${this.channelNum})" title="Minimizo/Maksimizo">−</button>
-                        <button class="chat-minimize-btn" onclick="closeChat(${this.channelNum})" title="Mbyll Chat">×</button>
-                    </div>
+                    <button class="chat-toggle-btn" onclick="toggleChat(${this.channelNum})" title="Minimizo/Maksimizo">−</button>
                 </div>
                 <div class="chat-messages" id="chatMessages${this.channelNum}">
                     <div class="chat-loading">Duke ngarkuar mesazhet...</div>
@@ -534,49 +531,6 @@ if (typeof firebase === 'undefined') {
             }
         }
     };
-    
-    // Close/minimize chat completely
-    window.closeChat = function(channelNum) {
-        const container = document.getElementById(`chatContainer${channelNum}`);
-        if (container) {
-            container.classList.add('chat-hidden');
-            // Show floating button to reopen
-            showChatFloatButton(channelNum);
-        }
-    };
-    
-    // Open chat from floating button
-    window.openChat = function(channelNum) {
-        const container = document.getElementById(`chatContainer${channelNum}`);
-        if (container) {
-            container.classList.remove('chat-hidden');
-            container.classList.remove('chat-collapsed');
-            // Hide floating button
-            hideChatFloatButton(channelNum);
-        }
-    };
-    
-    // Show floating button to reopen chat
-    function showChatFloatButton(channelNum) {
-        // Remove existing button if any
-        hideChatFloatButton(channelNum);
-        
-        const floatBtn = document.createElement('button');
-        floatBtn.id = `chatFloatBtn${channelNum}`;
-        floatBtn.className = 'chat-float-btn';
-        floatBtn.innerHTML = '💬';
-        floatBtn.title = 'Hap Chat';
-        floatBtn.onclick = () => openChat(channelNum);
-        document.body.appendChild(floatBtn);
-    }
-    
-    // Hide floating button
-    function hideChatFloatButton(channelNum) {
-        const floatBtn = document.getElementById(`chatFloatBtn${channelNum}`);
-        if (floatBtn) {
-            floatBtn.remove();
-        }
-    }
     
     // Function to update chat visibility based on current channel
     function updateChatVisibility(channelNum) {
