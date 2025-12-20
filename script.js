@@ -75,6 +75,7 @@ channelTabs.forEach(tab => {
 
 // Single Video Player - Switches between channels
 let currentChannel = 1; // Default to Kanali 1
+window.currentChannel = currentChannel; // Make available globally
 const mainVideoPlayer = {
     element: null,
     isPlaying: false,
@@ -205,6 +206,7 @@ function switchChannel(channelNum) {
     if (channelNum === currentChannel) return;
     
     currentChannel = channelNum;
+    window.currentChannel = channelNum; // Update global reference
     
     // Update active tab
     document.querySelectorAll('.channel-tab-btn').forEach(btn => {
