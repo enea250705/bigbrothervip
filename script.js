@@ -775,10 +775,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeMainVideoPlayer();
 
     // Auto-start the stream after a short delay to ensure everything is loaded
+    // Kanali 1 uses OK.ru iframe embed - it will load automatically
     setTimeout(() => {
         console.log('Auto-starting stream...');
-        startStream(1); // Start with Kanali 1 by default
-    }, 800);
+        startStream(1); // Start with Kanali 1 (OK.ru iframe embed)
+    }, 500);
 
     // Set initial viewer counts
     updateViewerCounts();
