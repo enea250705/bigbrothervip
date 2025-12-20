@@ -142,6 +142,13 @@ function initializeMainVideoPlayer() {
     const playButton = document.getElementById('mainPlayButton');
     if (playButton) {
         playButton.addEventListener('click', () => {
+            // Add visual feedback
+            playButton.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                playButton.style.transform = 'scale(1)';
+            }, 150);
+
+            // Start the stream
             startStream(currentChannel);
         });
     }

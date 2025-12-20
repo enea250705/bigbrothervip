@@ -225,24 +225,26 @@ body {
 }
 
 .channel-tab-btn {
-    background: linear-gradient(135deg, rgba(10, 15, 46, 0.95), rgba(26, 26, 26, 0.95));
-    border: 3px solid rgba(0, 51, 160, 0.4);
-    border-radius: 20px;
-    padding: 20px 40px;
+    background: linear-gradient(135deg, rgba(10, 15, 46, 0.98), rgba(26, 26, 26, 0.98));
+    border: 3px solid rgba(0, 51, 160, 0.5);
+    border-radius: 25px;
+    padding: 25px 50px;
     color: var(--text-light);
-    font-weight: 800;
-    font-size: 18px;
+    font-weight: 900;
+    font-size: 20px;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
     flex: 1;
-    max-width: 350px;
+    max-width: 400px;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .channel-tab-btn::before {
@@ -252,8 +254,8 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: left 0.6s;
 }
 
 .channel-tab-btn:hover::before {
@@ -261,10 +263,10 @@ body {
 }
 
 .channel-tab-btn:hover {
-    background: linear-gradient(135deg, rgba(0, 51, 160, 0.3), rgba(0, 85, 204, 0.3));
+    background: linear-gradient(135deg, rgba(0, 51, 160, 0.4), rgba(0, 85, 204, 0.4));
     border-color: var(--primary-blue);
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(0, 51, 160, 0.4);
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 10px 30px rgba(0, 51, 160, 0.5);
 }
 
 .channel-tab-btn:active {
@@ -274,24 +276,25 @@ body {
 .channel-tab-btn.active {
     background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
     border-color: var(--light-blue);
-    box-shadow: 0 8px 30px rgba(0, 51, 160, 0.6), 0 0 20px rgba(102, 204, 255, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 10px 35px rgba(0, 51, 160, 0.7), 0 0 25px rgba(102, 204, 255, 0.4);
+    transform: translateY(-3px) scale(1.02);
     animation: pulse-glow 2s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
     0%, 100% {
-        box-shadow: 0 8px 30px rgba(0, 51, 160, 0.6), 0 0 20px rgba(102, 204, 255, 0.3);
+        box-shadow: 0 10px 35px rgba(0, 51, 160, 0.7), 0 0 25px rgba(102, 204, 255, 0.4);
     }
     50% {
-        box-shadow: 0 8px 30px rgba(0, 51, 160, 0.8), 0 0 30px rgba(102, 204, 255, 0.5);
+        box-shadow: 0 10px 35px rgba(0, 51, 160, 0.9), 0 0 35px rgba(102, 204, 255, 0.6);
     }
 }
 
 .channel-tab-btn span {
-    font-size: 20px;
+    font-size: 22px;
     letter-spacing: 2px;
-    font-weight: 800;
+    font-weight: 900;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     text-transform: uppercase;
     position: relative;
     z-index: 1;
