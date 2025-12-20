@@ -21,20 +21,21 @@
 // 5. Get your config from Project Settings > General > Your apps
 // 6. Replace the firebaseConfig below with your actual credentials
 
-// Firebase configuration - REPLACE WITH YOUR OWN
+// Firebase configuration
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY_HERE",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com/"
+    apiKey: "AIzaSyDf1OOWES1HSpA2enw33DOUZif-y_tZYFM",
+    authDomain: "bbvip-63bea.firebaseapp.com",
+    databaseURL: "https://bbvip-63bea-default-rtdb.firebaseio.com",
+    projectId: "bbvip-63bea",
+    storageBucket: "bbvip-63bea.firebasestorage.app",
+    messagingSenderId: "320903242040",
+    appId: "1:320903242040:web:3ab09533252cfe5a6ca1cd"
 };
 
 // Check if Firebase is configured
-const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY_HERE" && 
-                             firebaseConfig.databaseURL !== "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com/";
+const isFirebaseConfigured = firebaseConfig.apiKey && 
+                             firebaseConfig.databaseURL &&
+                             firebaseConfig.apiKey !== "YOUR_API_KEY_HERE";
 
 // Initialize Firebase (only if not already initialized)
 if (typeof firebase === 'undefined') {
