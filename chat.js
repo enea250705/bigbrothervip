@@ -151,35 +151,18 @@ if (typeof firebase === 'undefined') {
         `;
         document.body.appendChild(modal);
         
-        // Prevent closing modal by clicking outside
+        // Allow closing modal by clicking outside (optional)
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
-                // Don't close - show message
-                const input = document.getElementById('usernameInput');
-                if (input && !input.value.trim()) {
-                    input.style.borderColor = '#ff4444';
-                    input.style.animation = 'shake 0.5s';
-                    setTimeout(() => {
-                        input.style.animation = '';
-                    }, 500);
-                }
+                // Allow closing, but warn user they need username to send
+                closeUsernameModal();
             }
         });
         
-        // Prevent ESC key from closing
-        document.addEventListener('keydown', function preventEsc(e) {
+        // Allow ESC key to close
+        document.addEventListener('keydown', function handleEsc(e) {
             if (e.key === 'Escape' && document.getElementById('usernamePickerModal')) {
-                e.preventDefault();
-                e.stopPropagation();
-                const input = document.getElementById('usernameInput');
-                if (input) {
-                    input.focus();
-                    input.style.borderColor = '#ff4444';
-                    input.style.animation = 'shake 0.5s';
-                    setTimeout(() => {
-                        input.style.animation = '';
-                    }, 500);
-                }
+                closeUsernameModal();
             }
         }, { once: false });
         
@@ -229,6 +212,14 @@ if (typeof firebase === 'undefined') {
         }
     };
     
+    // Close username modal
+    window.closeUsernameModal = function() {
+        const modal = document.getElementById('usernamePickerModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+    
     // Live Chat Manager
     class LiveChat {
         constructor(channelNum) {
@@ -244,18 +235,7 @@ if (typeof firebase === 'undefined') {
         
         // Initialize chat
         init() {
-            // Check if username is set
-            if (!this.username) {
-                showUsernamePicker((username) => {
-                    this.username = username;
-                    this.setupChatUI();
-                    this.setupViewerCounter();
-                    this.setupMessageListener();
-                    this.registerViewer();
-                });
-                return;
-            }
-            
+            // Always setup chat UI - username will be requested when sending
             this.setupChatUI();
             this.setupViewerCounter();
             this.setupMessageListener();
@@ -301,10 +281,9 @@ if (typeof firebase === 'undefined') {
                     <input type="text" 
                            id="chatInput${this.channelNum}" 
                            class="chat-input" 
-                           placeholder="${this.username ? 'Shkruaj një mesazh...' : 'Duhet emër për të dërguar mesazhe...'}"
-                           maxlength="200"
-                           ${!this.username ? 'disabled' : ''}>
-                    <button class="chat-send-btn" onclick="sendMessage(${this.channelNum})" ${!this.username ? 'disabled' : ''}>Dërgo</button>
+                           placeholder="Shkruaj një mesazh..."
+                           maxlength="200">
+                    <button class="chat-send-btn" onclick="sendMessage(${this.channelNum})">Dërgo</button>
                 </div>
             `;
             
@@ -416,22 +395,23 @@ if (typeof firebase === 'undefined') {
         
         // Send message (only if username is set)
         sendMessage() {
-            // Check if username is set
-            if (!this.username) {
-                alert('Duhet të zgjidhni një emër për të dërguar mesazhe. Ju lutem rifreskoni faqen dhe zgjidhni emrin tuaj.');
-                showUsernamePicker((username) => {
-                    this.username = username;
-                    // Try sending again
-                    setTimeout(() => this.sendMessage(), 100);
-                });
-                return;
-            }
-            
             const input = document.getElementById(`chatInput${this.channelNum}`);
             if (!input) return;
             
             const text = input.value.trim();
             if (!text) return;
+            
+            // Check if username is set - show picker if not
+            if (!this.username) {
+                showUsernamePicker((username) => {
+                    this.username = username;
+                    // Update username in localStorage
+                    setUsername(username);
+                    // Try sending again
+                    setTimeout(() => this.sendMessage(), 100);
+                });
+                return;
+            }
             
             // Create message
             const message = {
