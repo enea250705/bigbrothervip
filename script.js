@@ -96,8 +96,8 @@ const mainVideoPlayer = {
 //    - Iframe embeds: Full URL (will use iframe instead of video element)
 // ============================================
 const streamUrls = {
-    1: 'ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4', // Kanali 1 - Replace with live stream URL when ready
-    2: 'ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4'  // Kanali 2 - Replace with live stream URL when ready
+    1: './ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4', // Kanali 1 - Replace with live stream URL when ready
+    2: './ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4'  // Kanali 2 - Replace with live stream URL when ready
 };
 
 // Stream types configuration (auto-detected, but can be manually set)
@@ -442,29 +442,59 @@ function startStream(channelNum) {
         if (video) {
             mainVideoPlayer.videoElement = video;
             
-            // Explicitly play the video (user interaction allows this)
-            video.play().then(() => {
-                console.log(`Video channel ${channelNum} started playing`);
-            }).catch((error) => {
-                console.error(`Error playing video channel ${channelNum}:`, error);
-                // If autoplay fails, video controls will allow manual play
+            // Add load event listener
+            video.addEventListener('loadedmetadata', () => {
+                console.log('Video metadata loaded');
             });
             
-            // Handle video errors
+            video.addEventListener('canplay', () => {
+                console.log('Video can play');
+                // Try to play when video is ready
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log(`Video channel ${channelNum} started playing`);
+                        mainVideoPlayer.isPlaying = true;
+                    }).catch((error) => {
+                        console.error(`Error playing video channel ${channelNum}:`, error);
+                        // Show play button if autoplay fails
+                        const overlay = videoPlayer.querySelector('.video-overlay');
+                        if (overlay) overlay.style.display = 'flex';
+                    });
+                }
+            });
+            
+            // Explicitly try to play the video
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log(`Video channel ${channelNum} started playing immediately`);
+                    mainVideoPlayer.isPlaying = true;
+                }).catch((error) => {
+                    console.log(`Autoplay prevented for channel ${channelNum}, waiting for canplay event:`, error);
+                    // Will retry on canplay event
+                });
+            }
+            
+            // Handle video errors with detailed logging
             video.addEventListener('error', (e) => {
                 console.error(`Video channel ${channelNum} error:`, e);
                 const error = video.error;
                 if (error) {
                     let errorMsg = 'Gabim në ngarkimin e videos. ';
+                    let errorDetails = '';
                     switch(error.code) {
                         case error.MEDIA_ERR_ABORTED:
                             errorMsg += 'Video u ndal.';
+                            errorDetails = 'Video loading was aborted.';
                             break;
                         case error.MEDIA_ERR_NETWORK:
                             errorMsg += 'Gabim në rrjet. Kontrolloni lidhjen tuaj.';
+                            errorDetails = 'Network error. Check your connection or Cloudflare settings.';
                             break;
                         case error.MEDIA_ERR_DECODE:
                             errorMsg += 'Video nuk mund të dekodohet.';
+                            errorDetails = 'Video cannot be decoded.';
                             break;
                         case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
                             errorMsg += 'Formati i videos nuk mbështetet.';
