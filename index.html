@@ -14,9 +14,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     
-    <!-- Ad Manager - Limits ads to 7 per session (loads synchronously) -->
-    <script src="ad-manager.js"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -421,10 +418,11 @@
         </div>
     </div>
 
-    <!-- Quge5 Ad Script - Load synchronously for proper initialization -->
+    <!-- Ad Scripts - Loaded at end of body for better popunder support -->
+    <!-- Quge5 Ad Script -->
     <script src="https://quge5.com/88/tag.min.js" data-zone="194705" data-cfasync="false"></script>
 
-    <!-- Additional Ad Scripts -->
+    <!-- Additional Ad Scripts for Popunders -->
     <script>(function(s){s.dataset.zone='10353102',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
     <script src="https://3nbf4.com/act/files/tag.min.js?z=10353108" data-cfasync="false" async></script>
@@ -432,6 +430,16 @@
     <script>(function(s){s.dataset.zone='10353110',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
     <script>(function(s){s.dataset.zone='10353111',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+    <!-- Enable popunders after user interaction -->
+    <script>
+    // Popunders typically need user interaction to work
+    // This ensures they can trigger after any user click
+    document.addEventListener('click', function() {
+        // Allow popunders to work after user interaction
+        window.popunderEnabled = true;
+    }, { once: true });
+    </script>
 
     <script src="chat.js"></script>
     <script src="script.js"></script>
