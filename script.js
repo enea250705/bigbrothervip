@@ -365,13 +365,13 @@ function startStream(channelNum) {
         // Convert OK.ru video URL to embed format if needed
         let embedUrl = streamUrl;
         if (streamUrl.includes('ok.ru/video/')) {
-            // OK.ru embed format: https://ok.ru/videoembed/{video_id}
+            // OK.ru embed format: //ok.ru/videoembed/{video_id}?nochat=1&autoplay=1
             const videoId = streamUrl.match(/\/video\/(\d+)/);
             if (videoId) {
-                // Try videoembed format first
-                embedUrl = `https://ok.ru/videoembed/${videoId[1]}`;
+                // Use protocol-relative URL with nochat and autoplay parameters
+                embedUrl = `//ok.ru/videoembed/${videoId[1]}?nochat=1&autoplay=1`;
                 console.log('OK.ru video ID extracted:', videoId[1]);
-                console.log('OK.ru embed URL (videoembed):', embedUrl);
+                console.log('OK.ru embed URL:', embedUrl);
             } else {
                 console.error('Failed to extract OK.ru video ID from URL:', streamUrl);
             }
@@ -384,16 +384,14 @@ function startStream(channelNum) {
                 height="100%" 
                 src="${embedUrl}" 
                 frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
+                allow="autoplay; fullscreen" 
                 allowfullscreen
-                scrolling="no"
-                sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; background: #000;"
             ></iframe>
         `;
         console.log('Iframe player HTML created for:', embedUrl);
         // Note: OK.ru player has its own controls and fullscreen - no custom controls needed
-        // If videoembed doesn't work, OK.ru may block external embeds
+        // Parameters: nochat=1 (removes chat), autoplay=1 (starts automatically)
     } else if (streamType === 'hls') {
         // For HLS streams (.m3u8) - requires hls.js library
         playerHTML = `
