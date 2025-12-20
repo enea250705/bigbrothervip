@@ -74,7 +74,7 @@ if (typeof firebase === 'undefined') {
         return false;
     }
     
-    // Show username picker modal
+    // Show username picker modal (cannot be closed without username)
     function showUsernamePicker(callback) {
         // Check if modal already exists
         let modal = document.getElementById('usernamePickerModal');
@@ -83,31 +83,64 @@ if (typeof firebase === 'undefined') {
             return;
         }
         
-        // Create modal
+        // Create modal (no close button, cannot click outside)
         modal = document.createElement('div');
         modal.id = 'usernamePickerModal';
         modal.className = 'username-modal';
         modal.innerHTML = `
             <div class="username-modal-content">
-                <h2>Zgjidhni Emrin Tuaj për Chat</h2>
+                <h2>⚠️ Emri Kërkohet për Chat</h2>
                 <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 14px;">
-                    Zgjidhni një emër për të marrë pjesë në chat. Ky emër do të ruhet dhe do të përdoret përsëri kur të ktheheni.
+                    Duhet të zgjidhni një emër për të marrë pjesë në chat. Ky emër do të ruhet dhe do të përdoret përsëri kur të ktheheni.
                 </p>
                 <input type="text" 
                        id="usernameInput" 
                        class="username-input" 
-                       placeholder="Shkruani emrin tuaj..."
+                       placeholder="Shkruani emrin tuaj (2-20 karaktere)..."
                        maxlength="20"
-                       autocomplete="off">
+                       autocomplete="off"
+                       required>
                 <div class="username-actions">
                     <button class="username-submit-btn" onclick="submitUsername()">Hyr në Chat</button>
                 </div>
                 <p style="color: var(--text-gray); font-size: 12px; margin-top: 15px; text-align: center;">
-                    Emri duhet të jetë midis 2-20 karaktereve
+                    <strong>Obligative:</strong> Emri duhet të jetë midis 2-20 karaktereve
                 </p>
             </div>
         `;
         document.body.appendChild(modal);
+        
+        // Prevent closing modal by clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                // Don't close - show message
+                const input = document.getElementById('usernameInput');
+                if (input && !input.value.trim()) {
+                    input.style.borderColor = '#ff4444';
+                    input.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        input.style.animation = '';
+                    }, 500);
+                }
+            }
+        });
+        
+        // Prevent ESC key from closing
+        document.addEventListener('keydown', function preventEsc(e) {
+            if (e.key === 'Escape' && document.getElementById('usernamePickerModal')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const input = document.getElementById('usernameInput');
+                if (input) {
+                    input.focus();
+                    input.style.borderColor = '#ff4444';
+                    input.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        input.style.animation = '';
+                    }, 500);
+                }
+            }
+        }, { once: false });
         
         // Focus input
         setTimeout(() => {
@@ -209,9 +242,10 @@ if (typeof firebase === 'undefined') {
                     <input type="text" 
                            id="chatInput${this.channelNum}" 
                            class="chat-input" 
-                           placeholder="Shkruaj një mesazh..."
-                           maxlength="200">
-                    <button class="chat-send-btn" onclick="sendMessage(${this.channelNum})">Dërgo</button>
+                           placeholder="${this.username ? 'Shkruaj një mesazh...' : 'Duhet emër për të dërguar mesazhe...'}"
+                           maxlength="200"
+                           ${!this.username ? 'disabled' : ''}>
+                    <button class="chat-send-btn" onclick="sendMessage(${this.channelNum})" ${!this.username ? 'disabled' : ''}>Dërgo</button>
                 </div>
             `;
             
@@ -314,8 +348,19 @@ if (typeof firebase === 'undefined') {
             }
         }
         
-        // Send message
+        // Send message (only if username is set)
         sendMessage() {
+            // Check if username is set
+            if (!this.username) {
+                alert('Duhet të zgjidhni një emër për të dërguar mesazhe. Ju lutem rifreskoni faqen dhe zgjidhni emrin tuaj.');
+                showUsernamePicker((username) => {
+                    this.username = username;
+                    // Try sending again
+                    setTimeout(() => this.sendMessage(), 100);
+                });
+                return;
+            }
+            
             const input = document.getElementById(`chatInput${this.channelNum}`);
             if (!input) return;
             
