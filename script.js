@@ -108,7 +108,7 @@ const mainVideoPlayer = {
 // with full controls (play, pause, volume, fullscreen, etc.)
 // ============================================
 const streamUrls = {
-    1: './ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4', // Kanali 1 - Replace with live stream URL when ready
+    1: 'https://ok.ru/video/10632798674630', // Kanali 1 - OK.ru live stream
     2: './ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4'  // Kanali 2 - Replace with live stream URL when ready
 };
 
@@ -116,7 +116,7 @@ const streamUrls = {
 // Options: 'video' (native HTML5), 'hls', 'dash', or 'iframe'
 // For live streams, 'video' or 'hls' will use native player with full controls
 const streamTypes = {
-    1: 'video', // 'video', 'hls', 'dash', or 'iframe'
+    1: 'iframe', // OK.ru uses iframe embed
     2: 'video'   // 'video', 'hls', 'dash', or 'iframe'
 };
 
