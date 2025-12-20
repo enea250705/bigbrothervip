@@ -554,6 +554,33 @@ function startStream(channelNum) {
         }
         if (iframe) {
             mainVideoPlayer.iframeElement = iframe;
+            
+            // Add error handling for iframe
+            iframe.addEventListener('load', () => {
+                console.log('Iframe loaded successfully');
+                // Hide loading indicator
+                const loading = document.getElementById('loadingIndicator');
+                if (loading) loading.style.display = 'none';
+            });
+            
+            // Check if OK.ru blocks embedding (common issue)
+            setTimeout(() => {
+                try {
+                    // Try to access iframe content (will fail if cross-origin, which is normal)
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+                    console.log('Iframe content accessible');
+                } catch (e) {
+                    console.warn('Cross-origin restriction (normal for OK.ru embeds):', e.message);
+                    // This is expected - OK.ru uses cross-origin restrictions
+                }
+                
+                // Check if iframe actually loaded content
+                if (iframe.contentWindow) {
+                    console.log('Iframe window accessible');
+                } else {
+                    console.error('Iframe window not accessible - OK.ru may be blocking embed');
+                }
+            }, 2000);
         }
     }, 100);
 }
