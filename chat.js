@@ -236,22 +236,29 @@ if (typeof firebase === 'undefined') {
         
         // Initialize chat
         init() {
-            console.log(`Initializing chat for channel ${this.channelNum}`);
+            console.log(`[INIT] Starting initialization for channel ${this.channelNum}`);
             try {
                 // Always setup chat UI - username will be requested when sending
+                console.log(`[INIT] Step 1: Calling setupChatUI() for channel ${this.channelNum}`);
                 this.setupChatUI();
-                console.log(`Chat UI setup complete for channel ${this.channelNum}`);
+                console.log(`[INIT] Step 1 complete: setupChatUI() returned for channel ${this.channelNum}`);
                 
+                console.log(`[INIT] Step 2: Calling setupViewerCounter() for channel ${this.channelNum}`);
                 this.setupViewerCounter();
-                console.log(`Viewer counter setup complete for channel ${this.channelNum}`);
+                console.log(`[INIT] Step 2 complete: setupViewerCounter() returned for channel ${this.channelNum}`);
                 
+                console.log(`[INIT] Step 3: Calling setupMessageListener() for channel ${this.channelNum}`);
                 this.setupMessageListener();
-                console.log(`Message listener setup complete for channel ${this.channelNum}`);
+                console.log(`[INIT] Step 3 complete: setupMessageListener() returned for channel ${this.channelNum}`);
                 
+                console.log(`[INIT] Step 4: Calling registerViewer() for channel ${this.channelNum}`);
                 this.registerViewer();
-                console.log(`Viewer registration initiated for channel ${this.channelNum}`);
+                console.log(`[INIT] Step 4 complete: registerViewer() returned for channel ${this.channelNum}`);
+                
+                console.log(`[INIT] ✅ Initialization complete for channel ${this.channelNum}`);
             } catch (error) {
-                console.error(`Error initializing chat for channel ${this.channelNum}:`, error);
+                console.error(`[INIT] ❌ Error initializing chat for channel ${this.channelNum}:`, error);
+                console.error(`[INIT] Error details:`, error.message, error.stack);
             }
         }
         
