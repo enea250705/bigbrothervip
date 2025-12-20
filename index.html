@@ -445,9 +445,17 @@
     <script>
         console.log('🔵 About to load chat.js...');
     </script>
-    <script src="chat.js" onerror="console.error('❌ Failed to load chat.js!')"></script>
+    <script src="chat.js?v=2" onload="console.log('✅ chat.js loaded successfully'); if (typeof firebase !== 'undefined') { console.log('✅ Firebase available after chat.js load'); }" onerror="console.error('❌ Failed to load chat.js! Check Network tab.')"></script>
     <script>
         console.log('🔵 chat.js script tag executed');
+        // Verify chat.js executed
+        setTimeout(() => {
+            if (!window.chatInstances) {
+                console.error('❌ chat.js did not initialize! Check for JavaScript errors above.');
+            } else {
+                console.log('✅ chat.js initialized successfully');
+            }
+        }, 2000);
     </script>
     <script src="script.js"></script>
 </body>
