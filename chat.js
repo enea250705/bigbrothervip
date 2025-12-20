@@ -236,11 +236,23 @@ if (typeof firebase === 'undefined') {
         
         // Initialize chat
         init() {
-            // Always setup chat UI - username will be requested when sending
-            this.setupChatUI();
-            this.setupViewerCounter();
-            this.setupMessageListener();
-            this.registerViewer();
+            console.log(`Initializing chat for channel ${this.channelNum}`);
+            try {
+                // Always setup chat UI - username will be requested when sending
+                this.setupChatUI();
+                console.log(`Chat UI setup complete for channel ${this.channelNum}`);
+                
+                this.setupViewerCounter();
+                console.log(`Viewer counter setup complete for channel ${this.channelNum}`);
+                
+                this.setupMessageListener();
+                console.log(`Message listener setup complete for channel ${this.channelNum}`);
+                
+                this.registerViewer();
+                console.log(`Viewer registration initiated for channel ${this.channelNum}`);
+            } catch (error) {
+                console.error(`Error initializing chat for channel ${this.channelNum}:`, error);
+            }
         }
         
         // Setup chat UI
