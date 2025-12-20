@@ -79,11 +79,52 @@ const videoPlayers = {
     2: { element: null, isPlaying: false, isMuted: false }
 };
 
-// Stream URLs - Video file for both channels
+// ============================================
+// STREAM CONFIGURATION
+// ============================================
+// Currently using video files. To switch to live streams:
+// 1. Replace the URLs below with your live stream URLs
+// 2. Supported formats:
+//    - Video files: .mp4, .webm, .ogg
+//    - HLS streams: .m3u8
+//    - DASH streams: .mpd
+//    - Iframe embeds: Full URL (will use iframe instead of video element)
+// ============================================
 const streamUrls = {
-    1: 'ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4', // Video file for Kanali 1
-    2: 'ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4'  // Video file for Kanali 2
+    1: 'ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4', // Kanali 1 - Replace with live stream URL when ready
+    2: 'ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4'  // Kanali 2 - Replace with live stream URL when ready
 };
+
+// Stream types configuration (auto-detected, but can be manually set)
+const streamTypes = {
+    1: 'video', // 'video', 'hls', 'dash', or 'iframe'
+    2: 'video'   // 'video', 'hls', 'dash', or 'iframe'
+};
+
+// Helper function to detect stream type
+function detectStreamType(url) {
+    if (!url) return 'video';
+    
+    // Check for iframe embed (YouTube, Twitch, etc.)
+    if (url.includes('youtube.com') || url.includes('youtu.be') || 
+        url.includes('twitch.tv') || url.includes('vimeo.com') ||
+        url.includes('embed') || url.includes('player')) {
+        return 'iframe';
+    }
+    
+    // Check for HLS stream
+    if (url.includes('.m3u8')) {
+        return 'hls';
+    }
+    
+    // Check for DASH stream
+    if (url.includes('.mpd')) {
+        return 'dash';
+    }
+    
+    // Default to video file
+    return 'video';
+}
 
 function initializeVideoPlayer(channelNum) {
     const videoPlayer = document.getElementById(`videoPlayer${channelNum}`);
@@ -113,29 +154,110 @@ function startStream(channelNum) {
     const videoPlayer = videoPlayers[channelNum].element;
     const streamUrl = streamUrls[channelNum];
     
-    // Create video element
-    videoPlayer.innerHTML = `
-        <video 
-            id="video${channelNum}"
-            width="100%" 
-            height="100%" 
-            controls
-            autoplay
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
-        >
-            <source src="${streamUrl}" type="video/mp4">
-            Shfletuesi juaj nuk mbështet video HTML5.
-        </video>
-        <div class="video-controls">
-            <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
-            <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
-        </div>
-    `;
+    if (!streamUrl) {
+        console.error(`No stream URL configured for channel ${channelNum}`);
+        return;
+    }
     
+    // Detect stream type (or use manual configuration)
+    const streamType = streamTypes[channelNum] || detectStreamType(streamUrl);
+    
+    let playerHTML = '';
+    
+    // ============================================
+    // STREAM PLAYER SETUP
+    // ============================================
+    // This section handles different stream types
+    // Modify here if you need custom stream handling
+    // ============================================
+    
+    if (streamType === 'iframe') {
+        // For iframe embeds (YouTube, Twitch, custom players)
+        playerHTML = `
+            <iframe 
+                id="iframe${channelNum}"
+                width="100%" 
+                height="100%" 
+                src="${streamUrl}" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+            ></iframe>
+            <div class="video-controls">
+                <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
+                <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
+            </div>
+        `;
+    } else if (streamType === 'hls') {
+        // For HLS streams (.m3u8) - requires hls.js library
+        playerHTML = `
+            <video 
+                id="video${channelNum}"
+                width="100%" 
+                height="100%" 
+                controls
+                autoplay
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
+            >
+                <source src="${streamUrl}" type="application/x-mpegURL">
+                Shfletuesi juaj nuk mbështet HLS streams.
+            </video>
+            <div class="video-controls">
+                <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
+                <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
+            </div>
+        `;
+    } else if (streamType === 'dash') {
+        // For DASH streams (.mpd) - requires dash.js library
+        playerHTML = `
+            <video 
+                id="video${channelNum}"
+                width="100%" 
+                height="100%" 
+                controls
+                autoplay
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
+            >
+                <source src="${streamUrl}" type="application/dash+xml">
+                Shfletuesi juaj nuk mbështet DASH streams.
+            </video>
+            <div class="video-controls">
+                <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
+                <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
+            </div>
+        `;
+    } else {
+        // Default: Video file (.mp4, .webm, .ogg, etc.)
+        const videoType = streamUrl.endsWith('.webm') ? 'video/webm' : 
+                         streamUrl.endsWith('.ogg') ? 'video/ogg' : 'video/mp4';
+        
+        playerHTML = `
+            <video 
+                id="video${channelNum}"
+                width="100%" 
+                height="100%" 
+                controls
+                autoplay
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
+            >
+                <source src="${streamUrl}" type="${videoType}">
+                Shfletuesi juaj nuk mbështet video HTML5.
+            </video>
+            <div class="video-controls">
+                <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
+                <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
+            </div>
+        `;
+    }
+    
+    videoPlayer.innerHTML = playerHTML;
     videoPlayers[channelNum].isPlaying = true;
+    videoPlayers[channelNum].streamType = streamType;
     
-    // Get video element
+    // Get video/iframe element
     const video = document.getElementById(`video${channelNum}`);
+    const iframe = document.getElementById(`iframe${channelNum}`);
     
     // Re-attach event listeners
     setTimeout(() => {
@@ -149,29 +271,38 @@ function startStream(channelNum) {
             volumeBtn.addEventListener('click', () => toggleVolume(channelNum));
         }
         
-        // Store video element reference
+        // Store element reference
         if (video) {
             videoPlayers[channelNum].videoElement = video;
+        }
+        if (iframe) {
+            videoPlayers[channelNum].iframeElement = iframe;
         }
     }, 100);
 }
 
 function toggleFullscreen(channelNum) {
     const videoPlayer = videoPlayers[channelNum].element;
+    const streamType = videoPlayers[channelNum].streamType || 'video';
     const video = videoPlayers[channelNum].videoElement || videoPlayer.querySelector(`#video${channelNum}`);
+    const iframe = videoPlayers[channelNum].iframeElement || videoPlayer.querySelector(`#iframe${channelNum}`);
     const videoWrapper = videoPlayer.closest('.video-wrapper');
     
-    if (video) {
-        if (video.requestFullscreen) {
-            video.requestFullscreen();
-        } else if (video.webkitRequestFullscreen) {
-            video.webkitRequestFullscreen();
-        } else if (video.mozRequestFullScreen) {
-            video.mozRequestFullScreen();
-        } else if (video.msRequestFullscreen) {
-            video.msRequestFullscreen();
+    // Handle fullscreen based on stream type
+    const elementToFullscreen = streamType === 'iframe' ? iframe : video;
+    
+    if (elementToFullscreen) {
+        if (elementToFullscreen.requestFullscreen) {
+            elementToFullscreen.requestFullscreen();
+        } else if (elementToFullscreen.webkitRequestFullscreen) {
+            elementToFullscreen.webkitRequestFullscreen();
+        } else if (elementToFullscreen.mozRequestFullScreen) {
+            elementToFullscreen.mozRequestFullScreen();
+        } else if (elementToFullscreen.msRequestFullscreen) {
+            elementToFullscreen.msRequestFullscreen();
         }
     } else if (videoWrapper) {
+        // Fallback to wrapper fullscreen
         if (videoWrapper.requestFullscreen) {
             videoWrapper.requestFullscreen();
         } else if (videoWrapper.webkitRequestFullscreen) {
@@ -187,10 +318,18 @@ function toggleFullscreen(channelNum) {
 function toggleVolume(channelNum) {
     videoPlayers[channelNum].isMuted = !videoPlayers[channelNum].isMuted;
     const videoPlayer = videoPlayers[channelNum].element;
+    const streamType = videoPlayers[channelNum].streamType || 'video';
     const video = videoPlayers[channelNum].videoElement || videoPlayer.querySelector(`#video${channelNum}`);
+    const iframe = videoPlayers[channelNum].iframeElement || videoPlayer.querySelector(`#iframe${channelNum}`);
     const volumeBtn = videoPlayer.querySelector(`.volume-btn[data-channel="${channelNum}"]`);
     
-    if (video) {
+    // Handle volume based on stream type
+    if (streamType === 'iframe') {
+        // For iframes, volume control is limited (depends on embed)
+        // Most iframe embeds handle volume internally
+        console.log('Volume control for iframe embeds is limited');
+    } else if (video) {
+        // For video elements (file, HLS, DASH)
         video.muted = videoPlayers[channelNum].isMuted;
     }
     
