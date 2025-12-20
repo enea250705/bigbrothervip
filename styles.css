@@ -1128,6 +1128,7 @@ body {
     flex-direction: column;
     gap: 10px;
     background: rgba(10, 15, 46, 0.5);
+    min-height: 0; /* Allow flex shrinking */
 }
 
 .chat-messages::-webkit-scrollbar {
