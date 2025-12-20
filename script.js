@@ -407,6 +407,9 @@ function startStream(channelNum) {
                 controls
                 preload="auto"
                 playsinline
+                autoplay
+                muted
+                loop
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
             >
                 <source src="${streamUrl}" type="${videoType}">
