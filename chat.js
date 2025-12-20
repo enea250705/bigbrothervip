@@ -624,5 +624,15 @@ if (typeof firebase === 'undefined') {
             }
         }, 1000);
     });
+    
+    } catch (error) {
+        console.error('❌ Firebase initialization error:', error);
+        console.error('Error details:', error.message);
+        console.error('Please check:');
+        console.error('1. Firebase project exists and is active');
+        console.error('2. Realtime Database is enabled (not Firestore)');
+        console.error('3. Database rules allow read/write');
+        console.error('4. Domain is authorized (if using Authentication)');
+    }
 }
 
