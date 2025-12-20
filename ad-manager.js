@@ -111,8 +111,12 @@
             if (quge5Script.src && !isScriptLoaded(quge5Script.src)) {
                 const src = quge5Script.src;
 
-                // Allow quge5.com ads to load freely (don't count them toward limit)
-                if (src.includes('quge5.com')) {
+                // Allow certain ad networks to load freely (don't count them toward limit)
+                if (src.includes('quge5.com') ||
+                    src.includes('al5sm.com') ||
+                    src.includes('3nbf4.com') ||
+                    src.includes('nap5k.com') ||
+                    src.includes('gizokraijaw.net')) {
                     trackAdScript(src);
                     console.log(`Ad script loaded (unlimited): ${src}`);
                     return;
@@ -165,8 +169,12 @@
                         node.src.includes('5gvci.com') ||
                         (node.src.includes('googletagmanager.com') && node.src.includes('pubads'))) {
 
-                        // Allow quge5.com ads to load freely
-                        if (node.src.includes('quge5.com')) {
+                        // Allow certain ad networks to load freely
+                        if (node.src.includes('quge5.com') ||
+                            node.src.includes('al5sm.com') ||
+                            node.src.includes('3nbf4.com') ||
+                            node.src.includes('nap5k.com') ||
+                            node.src.includes('gizokraijaw.net')) {
                             if (!isScriptLoaded(node.src)) {
                                 trackAdScript(node.src);
                                 console.log(`Ad script loaded (unlimited): ${node.src}`);
