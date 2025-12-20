@@ -442,7 +442,13 @@
     }, { once: true });
     </script>
 
-    <script src="chat.js"></script>
+    <script>
+        console.log('🔵 About to load chat.js...');
+    </script>
+    <script src="chat.js" onerror="console.error('❌ Failed to load chat.js!')"></script>
+    <script>
+        console.log('🔵 chat.js script tag executed');
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
