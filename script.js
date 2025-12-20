@@ -187,18 +187,15 @@ function toggleFullscreen(channelNum) {
 function toggleVolume(channelNum) {
     videoPlayers[channelNum].isMuted = !videoPlayers[channelNum].isMuted;
     const videoPlayer = videoPlayers[channelNum].element;
-    const iframe = videoPlayer.querySelector(`#iframe${channelNum}`);
+    const video = videoPlayers[channelNum].videoElement || videoPlayer.querySelector(`#video${channelNum}`);
     const volumeBtn = videoPlayer.querySelector(`.volume-btn[data-channel="${channelNum}"]`);
     
-    if (iframe) {
-        const src = iframe.src;
-        if (videoPlayers[channelNum].isMuted) {
-            iframe.src = src.replace('mute=0', 'mute=1');
-            if (volumeBtn) volumeBtn.textContent = '🔇';
-        } else {
-            iframe.src = src.replace('mute=1', 'mute=0');
-            if (volumeBtn) volumeBtn.textContent = '🔊';
-        }
+    if (video) {
+        video.muted = videoPlayers[channelNum].isMuted;
+    }
+    
+    if (volumeBtn) {
+        volumeBtn.textContent = videoPlayers[channelNum].isMuted ? '🔇' : '🔊';
     }
 }
 
