@@ -106,52 +106,24 @@
     
     // Initialize ad loading on page load
     function initAds() {
-        // Only load ads if we haven't reached the limit
-        if (!canLoadAds()) {
-            console.log('Ad limit reached (7/7). No ads will be loaded on this page.');
-            // Remove all ad scripts
-            document.querySelectorAll('script[data-ad-script="true"], script[src*="quge5.com"]').forEach(script => {
-                script.remove();
-            });
-            return;
-        }
-        
-        // Find and conditionally load ad scripts
+        // Find and track ad scripts (don't remove/re-add, just track)
         document.querySelectorAll('script[data-ad-script="true"], script[src*="quge5.com"]').forEach(quge5Script => {
-            if (!isScriptLoaded(quge5Script.src)) {
+            if (quge5Script.src && !isScriptLoaded(quge5Script.src)) {
                 const src = quge5Script.src;
                 
-                // Check if script is already loading/loaded (has src attribute and is in DOM)
-                if (quge5Script.src && quge5Script.parentNode) {
-                    // Script is already in DOM and has src - let it load naturally
-                    // Just track it without removing/re-adding
+                // Only track if we haven't reached the limit
+                if (canLoadAds()) {
                     if (incrementAdCount()) {
                         trackAdScript(src);
                         console.log(`Ad script tracked: ${src} (${getAdCount()}/${MAX_ADS_PER_SESSION} ads this session)`);
-                    } else {
-                        // Limit reached, remove script
-                        quge5Script.remove();
                     }
                 } else {
-                    // Script not loaded yet, load it conditionally
-                    const attributes = {};
-                    quge5Script.getAttributeNames().forEach(name => {
-                        if (name !== 'src') {
-                            attributes[name] = quge5Script.getAttribute(name);
-                        }
-                    });
-                    
-                    // Remove the original script
+                    // Limit reached, remove script to prevent loading
+                    console.log('Ad limit reached. Removing ad script:', src);
                     quge5Script.remove();
-                    
-                    // Load conditionally
-                    loadAdScript(src, attributes);
                 }
             }
         });
-        
-        // Service worker ads are handled separately
-        // We'll modify service worker registration to respect ad limit
     }
     
     // Expose API
