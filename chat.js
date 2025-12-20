@@ -81,6 +81,9 @@ if (typeof firebase === 'undefined') {
             console.error('❌ Firebase write permission error:', error);
             console.error('Please check Firebase Realtime Database rules!');
         });
+        
+        // Make database available globally for chat functions
+        window.firebaseDatabase = database;
     
     // Generate unique user ID (persists across sessions)
     function getUserId() {
