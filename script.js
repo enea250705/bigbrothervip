@@ -79,10 +79,10 @@ const videoPlayers = {
     2: { element: null, isPlaying: false, isMuted: false }
 };
 
-// Stream URLs - Replace these with actual Big Brother VIP Albania stream URLs
+// Stream URLs - Video file for both channels
 const streamUrls = {
-    1: 'YOUR_KANALI_1_STREAM_URL_HERE', // Replace with actual stream URL
-    2: 'YOUR_KANALI_2_STREAM_URL_HERE'  // Replace with actual stream URL
+    1: 'ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4', // Video file for Kanali 1
+    2: 'ssstik.io_@_bigbrothervipalbania_5_1766232867952.mp4'  // Video file for Kanali 2
 };
 
 function initializeVideoPlayer(channelNum) {
@@ -113,19 +113,19 @@ function startStream(channelNum) {
     const videoPlayer = videoPlayers[channelNum].element;
     const streamUrl = streamUrls[channelNum];
     
-    // For demo purposes, using a placeholder. Replace with actual stream embed code
-    // Example for iframe embed:
+    // Create video element
     videoPlayer.innerHTML = `
-        <iframe 
+        <video 
+            id="video${channelNum}"
             width="100%" 
             height="100%" 
-            src="${streamUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0'}" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-            id="iframe${channelNum}"
-        ></iframe>
+            controls
+            autoplay
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
+        >
+            <source src="${streamUrl}" type="video/mp4">
+            Shfletuesi juaj nuk mbështet video HTML5.
+        </video>
         <div class="video-controls">
             <button class="control-btn fullscreen-btn" data-channel="${channelNum}">⛶</button>
             <button class="control-btn volume-btn" data-channel="${channelNum}">🔊</button>
@@ -133,6 +133,9 @@ function startStream(channelNum) {
     `;
     
     videoPlayers[channelNum].isPlaying = true;
+    
+    // Get video element
+    const video = document.getElementById(`video${channelNum}`);
     
     // Re-attach event listeners
     setTimeout(() => {
@@ -144,6 +147,11 @@ function startStream(channelNum) {
         }
         if (volumeBtn) {
             volumeBtn.addEventListener('click', () => toggleVolume(channelNum));
+        }
+        
+        // Store video element reference
+        if (video) {
+            videoPlayers[channelNum].videoElement = video;
         }
     }, 100);
 }
@@ -317,43 +325,6 @@ function initNewsTabs() {
     });
 }
 
-// Countdown Timer - 20 Dhjetor 2025, ora 21:00
-function startCountdown() {
-    // Target date: December 20, 2025 at 21:00 (9 PM)
-    const targetDate = new Date('2025-12-20T21:00:00').getTime();
-    
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = targetDate - now;
-        
-        if (distance < 0) {
-            // Countdown finished
-            document.getElementById('days').textContent = '00';
-            document.getElementById('hours').textContent = '00';
-            document.getElementById('minutes').textContent = '00';
-            document.getElementById('seconds').textContent = '00';
-            return;
-        }
-        
-        // Calculate time units
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
-        // Update display
-        document.getElementById('days').textContent = String(days).padStart(2, '0');
-        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-    }
-    
-    // Update immediately
-    updateCountdown();
-    
-    // Update every second
-    setInterval(updateCountdown, 1000);
-}
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -361,10 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadClips();
     initNewsTabs();
     
-    // Start countdown timer
-    startCountdown();
-    
-    // Initialize both video players (hidden for now)
+    // Initialize both video players
     initializeVideoPlayer(1);
     initializeVideoPlayer(2);
     
