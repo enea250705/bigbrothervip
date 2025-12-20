@@ -322,6 +322,8 @@ if (typeof firebase === 'undefined') {
                     }
                 });
             }
+            
+            console.log(`setupChatUI() completed for channel ${this.channelNum}`);
         }
         
         // Setup message listener (loads all existing messages + new ones)
