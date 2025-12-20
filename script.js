@@ -804,7 +804,103 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
         updateViewerCountDisplay();
     }, 5000);
+    
+    // Picture-in-Picture functionality
+    setupPictureInPicture();
 });
+
+// Picture-in-Picture setup
+function setupPictureInPicture() {
+    // Check if browser supports Picture-in-Picture
+    if (!document.pictureInPictureEnabled) {
+        console.log('Picture-in-Picture not supported in this browser');
+        return;
+    }
+    
+    let pipActive = false;
+    
+    // Function to enter Picture-in-Picture
+    async function enterPictureInPicture() {
+        const video = mainVideoPlayer.videoElement || document.getElementById('mainVideo');
+        const iframe = mainVideoPlayer.iframeElement || document.getElementById('mainIframe');
+        
+        if (!video && !iframe) return;
+        
+        // For video elements, use native PiP API
+        if (video && video.readyState >= 2) {
+            try {
+                if (document.pictureInPictureElement !== video) {
+                    await video.requestPictureInPicture();
+                    pipActive = true;
+                    console.log('Entered Picture-in-Picture mode');
+                }
+            } catch (error) {
+                console.log('Could not enter Picture-in-Picture:', error);
+            }
+        } else if (iframe) {
+            // For iframes, PiP is limited - show notification
+            console.log('Picture-in-Picture for iframe embeds is limited. Use browser controls if available.');
+            // Some browsers allow PiP for iframes, but it's not widely supported
+            // The user can use browser's native PiP if available
+        }
+    }
+    
+    // Exit Picture-in-Picture
+    async function exitPictureInPicture() {
+        if (document.pictureInPictureElement) {
+            try {
+                await document.exitPictureInPicture();
+                pipActive = false;
+                console.log('Exited Picture-in-Picture mode');
+            } catch (error) {
+                console.log('Could not exit Picture-in-Picture:', error);
+            }
+        }
+    }
+    
+    // Listen for PiP events
+    document.addEventListener('enterpictureinpicture', () => {
+        pipActive = true;
+        console.log('Entered Picture-in-Picture');
+    });
+    
+    document.addEventListener('leavepictureinpicture', () => {
+        pipActive = false;
+        console.log('Left Picture-in-Picture');
+    });
+    
+    // Trigger PiP when user scrolls to bottom of page
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const scrollPosition = window.scrollY + window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollPercentage = (scrollPosition / documentHeight) * 100;
+            
+            // If scrolled to bottom (within 5% of end) and video is playing
+            if (scrollPercentage >= 95 && mainVideoPlayer.isPlaying && !pipActive) {
+                enterPictureInPicture();
+            }
+        }, 300);
+    });
+    
+    // Trigger PiP when user switches tabs (page becomes hidden)
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden && mainVideoPlayer.isPlaying && !pipActive) {
+            // User switched tabs - enter PiP
+            enterPictureInPicture();
+        } else if (!document.hidden && pipActive) {
+            // User came back - optionally exit PiP (or keep it)
+            // Uncomment below if you want to exit PiP when user returns
+            // exitPictureInPicture();
+        }
+    });
+    
+    // Make PiP functions available globally
+    window.enterPictureInPicture = enterPictureInPicture;
+    window.exitPictureInPicture = exitPictureInPicture;
+}
 
 // Add parallax effect on scroll
 window.addEventListener('scroll', () => {
