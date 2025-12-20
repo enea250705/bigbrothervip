@@ -468,13 +468,23 @@ function startStream(channelNum) {
     mainVideoPlayer.isPlaying = true;
     mainVideoPlayer.streamType = streamType;
     
-    // Hide overlay
+    // Hide overlay and loading indicator
     const overlay = videoPlayer.querySelector('.video-overlay');
     if (overlay) {
         overlay.style.display = 'none';
     }
     
-    // Get video/iframe element
+    // For iframe embeds (like OK.ru on Kanali 1), hide loading immediately
+    // No video element is created - only iframe
+    if (streamType === 'iframe') {
+        const loading = document.getElementById('loadingIndicator');
+        if (loading) {
+            loading.style.display = 'none';
+        }
+        console.log('Iframe embed loaded - no video element created');
+    }
+    
+    // Get video/iframe element (only one will exist based on streamType)
     const video = document.getElementById('mainVideo');
     const iframe = document.getElementById('mainIframe');
     
