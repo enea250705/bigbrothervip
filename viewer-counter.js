@@ -1,17 +1,17 @@
-// Simple Real-Time Viewer Counter using Pusher (Free Tier)
-// Much simpler than Firebase - just counts active viewers
+// Simple Real-Time Viewer Counter
+// Uses Firebase Realtime Database (already set up for chat)
+// When user enters: count goes up
+// When user leaves: count goes down
 
-// Simple viewer counter - No external service needed!
-// Uses localStorage + BroadcastChannel for real-time updates across tabs
-// Works across different users on the same device/browser
+console.log('🔵 viewer-counter.js loaded');
 
-// Simple viewer counter class
+// Simple Viewer Counter Class
 class SimpleViewerCounter {
     constructor(channelNum) {
         this.channelNum = channelNum;
         this.viewerCount = 0;
-        this.isActive = true;
-        this.channelName = `channel-${channelNum}`;
+        this.userId = null;
+        this.viewerRef = null;
         
         // Initialize
         this.init();
@@ -19,109 +19,87 @@ class SimpleViewerCounter {
     
     init() {
         console.log(`[ViewerCounter] Initializing for channel ${this.channelNum}`);
-        this.useSimpleCounter();
-    }
-    
-    // Simple counter using localStorage + BroadcastChannel for cross-tab communication
-    useSimpleCounter() {
-        console.log('[ViewerCounter] Using simple counter method');
         
-        // Generate unique session ID for this tab
-        const sessionId = 'viewer_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        const storageKey = `bbvip_viewer_${this.channelNum}`;
-        
-        // Use BroadcastChannel for real-time updates across tabs
-        let broadcastChannel = null;
-        try {
-            broadcastChannel = new BroadcastChannel(`bbvip_viewers_${this.channelNum}`);
-            broadcastChannel.onmessage = (event) => {
-                if (event.data.type === 'viewer_update') {
-                    this.viewerCount = event.data.count;
-                    this.updateDisplay();
-                }
-            };
-        } catch (e) {
-            console.log('[ViewerCounter] BroadcastChannel not supported, using localStorage only');
+        // Check if Firebase is available
+        if (typeof firebase === 'undefined' || !firebase.database) {
+            console.error('[ViewerCounter] Firebase not available');
+            this.showFallbackCount();
+            return;
         }
         
-        // Register this viewer
-        const registerViewer = () => {
-            const viewers = JSON.parse(localStorage.getItem(storageKey) || '{}');
-            viewers[sessionId] = Date.now();
-            localStorage.setItem(storageKey, JSON.stringify(viewers));
+        try {
+            // Use Firebase database (already initialized in chat.js)
+            const database = firebase.database();
+            const viewersRef = database.ref(`viewers/channel_${this.channelNum}`);
             
-            // Broadcast update
-            if (broadcastChannel) {
-                broadcastChannel.postMessage({
-                    type: 'viewer_joined',
-                    sessionId: sessionId,
-                    channel: this.channelNum
-                });
-            }
-        };
-        
-        registerViewer();
-        
-        // Update count every 3 seconds
-        const updateCount = () => {
-            if (!this.isActive) return;
+            // Generate unique user ID for this session
+            this.userId = 'viewer_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            this.viewerRef = viewersRef.child(this.userId);
             
-            const now = Date.now();
-            const viewers = JSON.parse(localStorage.getItem(storageKey) || '{}');
-            const activeViewers = {};
+            console.log(`[ViewerCounter] User ID: ${this.userId}`);
             
-            // Clean up old viewers (inactive for 30 seconds) and update active ones
-            Object.keys(viewers).forEach(id => {
-                if (now - viewers[id] < 30000) {
-                    activeViewers[id] = viewers[id];
+            // Register as active viewer
+            this.viewerRef.set({
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                channel: this.channelNum
+            }).then(() => {
+                console.log(`[ViewerCounter] Registered as viewer for channel ${this.channelNum}`);
+            }).catch((error) => {
+                console.error('[ViewerCounter] Error registering viewer:', error);
+            });
+            
+            // Listen for viewer count changes
+            viewersRef.on('value', (snapshot) => {
+                const viewers = snapshot.val();
+                if (viewers) {
+                    const count = Object.keys(viewers).length;
+                    this.viewerCount = count;
+                    this.updateDisplay();
+                    console.log(`[ViewerCounter] Channel ${this.channelNum} now has ${count} viewers`);
+                } else {
+                    this.viewerCount = 0;
+                    this.updateDisplay();
+                }
+            }, (error) => {
+                console.error('[ViewerCounter] Error reading viewer count:', error);
+            });
+            
+            // Remove viewer when page unloads
+            window.addEventListener('beforeunload', () => {
+                this.removeViewer();
+            });
+            
+            window.addEventListener('pagehide', () => {
+                this.removeViewer();
+            });
+            
+            // Also remove on visibility change (tab hidden for > 30 seconds)
+            let hiddenTime = null;
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    hiddenTime = Date.now();
+                } else {
+                    if (hiddenTime && Date.now() - hiddenTime > 30000) {
+                        // Tab was hidden for more than 30 seconds, remove viewer
+                        this.removeViewer();
+                    }
+                    hiddenTime = null;
                 }
             });
             
-            // Update this viewer's timestamp
-            activeViewers[sessionId] = now;
-            localStorage.setItem(storageKey, JSON.stringify(activeViewers));
-            
-            // Count active viewers
-            const newCount = Object.keys(activeViewers).length;
-            if (newCount !== this.viewerCount) {
-                this.viewerCount = newCount;
-                this.updateDisplay();
-                
-                // Broadcast update
-                if (broadcastChannel) {
-                    broadcastChannel.postMessage({
-                        type: 'viewer_update',
-                        count: newCount,
-                        channel: this.channelNum
-                    });
-                }
-            }
-        };
-        
-        // Initial count
-        updateCount();
-        
-        // Update periodically
-        setInterval(updateCount, 3000);
-        
-        // Clean up on page unload
-        const cleanup = () => {
-            this.isActive = false;
-            const viewers = JSON.parse(localStorage.getItem(storageKey) || '{}');
-            delete viewers[sessionId];
-            localStorage.setItem(storageKey, JSON.stringify(viewers));
-            
-            if (broadcastChannel) {
-                broadcastChannel.postMessage({
-                    type: 'viewer_left',
-                    sessionId: sessionId,
-                    channel: this.channelNum
-                });
-            }
-        };
-        
-        window.addEventListener('beforeunload', cleanup);
-        window.addEventListener('pagehide', cleanup);
+        } catch (error) {
+            console.error('[ViewerCounter] Error initializing:', error);
+            this.showFallbackCount();
+        }
+    }
+    
+    removeViewer() {
+        if (this.viewerRef) {
+            console.log(`[ViewerCounter] Removing viewer ${this.userId} from channel ${this.channelNum}`);
+            this.viewerRef.remove().catch((error) => {
+                console.error('[ViewerCounter] Error removing viewer:', error);
+            });
+        }
     }
     
     updateDisplay() {
@@ -130,6 +108,7 @@ class SimpleViewerCounter {
             const currentChannel = window.currentChannel || 1;
             if (this.channelNum === currentChannel) {
                 currentViewerCount.textContent = this.viewerCount.toLocaleString('sq-AL');
+                console.log(`[ViewerCounter] Updated display to: ${this.viewerCount}`);
             }
         }
         
@@ -137,10 +116,24 @@ class SimpleViewerCounter {
         window.viewerCounts = window.viewerCounts || {};
         window.viewerCounts[this.channelNum] = this.viewerCount;
     }
+    
+    showFallbackCount() {
+        // Fallback: show a static count
+        this.viewerCount = 1;
+        this.updateDisplay();
+    }
 }
 
-// Initialize viewer counters when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize viewer counters when DOM and Firebase are ready
+function initializeViewerCounters() {
+    // Wait for Firebase to be ready
+    if (typeof firebase === 'undefined' || !firebase.database) {
+        console.log('[ViewerCounter] Waiting for Firebase...');
+        setTimeout(initializeViewerCounters, 500);
+        return;
+    }
+    
+    // Wait a bit more for Firebase to fully initialize
     setTimeout(() => {
         console.log('[ViewerCounter] Initializing counters...');
         window.viewerCounters = {
@@ -149,8 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         // Update display when channel switches
-        if (window.switchChannel) {
-            const originalSwitchChannel = window.switchChannel;
+        const originalSwitchChannel = window.switchChannel;
+        if (originalSwitchChannel) {
             window.switchChannel = function(channelNum) {
                 originalSwitchChannel(channelNum);
                 // Update viewer count display
@@ -160,5 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
     }, 1000);
-});
+}
 
+// Start initialization
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeViewerCounters);
+} else {
+    initializeViewerCounters();
+}
