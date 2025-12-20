@@ -369,6 +369,10 @@ function startStream(channelNum) {
             const videoId = streamUrl.match(/\/video\/(\d+)/);
             if (videoId) {
                 embedUrl = `https://ok.ru/videoembed/${videoId[1]}`;
+                console.log('OK.ru video ID extracted:', videoId[1]);
+                console.log('OK.ru embed URL:', embedUrl);
+            } else {
+                console.error('Failed to extract OK.ru video ID from URL:', streamUrl);
             }
         }
         
@@ -381,9 +385,11 @@ function startStream(channelNum) {
                 frameborder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowfullscreen
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                scrolling="no"
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"
             ></iframe>
         `;
+        console.log('Iframe player HTML created for:', embedUrl);
         // Note: OK.ru player has its own controls and fullscreen - no custom controls needed
     } else if (streamType === 'hls') {
         // For HLS streams (.m3u8) - requires hls.js library
