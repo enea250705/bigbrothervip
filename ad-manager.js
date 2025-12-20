@@ -110,8 +110,15 @@
         document.querySelectorAll('script[data-ad-script="true"], script[src*="quge5.com"]').forEach(quge5Script => {
             if (quge5Script.src && !isScriptLoaded(quge5Script.src)) {
                 const src = quge5Script.src;
-                
-                // Only track if we haven't reached the limit
+
+                // Allow quge5.com ads to load freely (don't count them toward limit)
+                if (src.includes('quge5.com')) {
+                    trackAdScript(src);
+                    console.log(`Ad script loaded (unlimited): ${src}`);
+                    return;
+                }
+
+                // For other ad scripts, apply the limit
                 if (canLoadAds()) {
                     if (incrementAdCount()) {
                         trackAdScript(src);
@@ -154,10 +161,20 @@
             mutation.addedNodes.forEach(function(node) {
                 if (node.nodeName === 'SCRIPT' && node.src) {
                     // Check if it's an ad script
-                    if (node.src.includes('quge5.com') || 
+                    if (node.src.includes('quge5.com') ||
                         node.src.includes('5gvci.com') ||
                         (node.src.includes('googletagmanager.com') && node.src.includes('pubads'))) {
-                        // Only handle if limit not reached
+
+                        // Allow quge5.com ads to load freely
+                        if (node.src.includes('quge5.com')) {
+                            if (!isScriptLoaded(node.src)) {
+                                trackAdScript(node.src);
+                                console.log(`Ad script loaded (unlimited): ${node.src}`);
+                            }
+                            return;
+                        }
+
+                        // For other ad scripts, apply the limit
                         if (!canLoadAds()) {
                             node.remove();
                         } else if (!isScriptLoaded(node.src)) {
@@ -174,7 +191,7 @@
             });
         });
     });
-    
+
     // Start observing after a delay to avoid interfering with initial script loads
     setTimeout(() => {
         observer.observe(document.head, {
