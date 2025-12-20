@@ -273,7 +273,10 @@ if (typeof firebase === 'undefined') {
             chatContainer.innerHTML = `
                 <div class="chat-header">
                     <h3>💬 Chat Live - Kanali ${this.channelNum}</h3>
-                    <button class="chat-toggle-btn" onclick="toggleChat(${this.channelNum})">−</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="chat-toggle-btn" onclick="toggleChat(${this.channelNum})" title="Minimizo/Maksimizo">−</button>
+                        <button class="chat-minimize-btn" onclick="closeChat(${this.channelNum})" title="Mbyll Chat">×</button>
+                    </div>
                 </div>
                 <div class="chat-messages" id="chatMessages${this.channelNum}">
                     <div class="chat-loading">Duke ngarkuar mesazhet...</div>
