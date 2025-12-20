@@ -684,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         console.log('Auto-starting stream...');
         startStream(1); // Start with Kanali 1 by default
-    }, 500);
+    }, 800);
 
     // Set initial viewer counts
     updateViewerCounts();
