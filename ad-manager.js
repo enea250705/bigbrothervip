@@ -176,7 +176,7 @@
     // Also run after a short delay to catch any scripts that might load later
     setTimeout(initAds, 50);
     
-    // Monitor for dynamically added ad scripts
+    // Monitor for dynamically added ad scripts (but don't interfere with initial load)
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             mutation.addedNodes.forEach(function(node) {
@@ -184,17 +184,18 @@
                     // Check if it's an ad script
                     if (node.src.includes('quge5.com') || 
                         node.src.includes('5gvci.com') ||
-                        node.src.includes('googletagmanager.com') && node.src.includes('pubads')) {
-                        // Don't auto-load, let AdManager handle it
-                        if (!isScriptLoaded(node.src) && canLoadAds()) {
-                            const attributes = {};
-                            node.getAttributeNames().forEach(name => {
-                                attributes[name] = node.getAttribute(name);
-                            });
+                        (node.src.includes('googletagmanager.com') && node.src.includes('pubads'))) {
+                        // Only handle if limit not reached
+                        if (!canLoadAds()) {
                             node.remove();
-                            loadAdScript(node.src, attributes);
-                        } else if (!canLoadAds()) {
-                            node.remove();
+                        } else if (!isScriptLoaded(node.src)) {
+                            // Track it if not already tracked
+                            if (incrementAdCount()) {
+                                trackAdScript(node.src);
+                                console.log(`Ad script tracked: ${node.src} (${getAdCount()}/${MAX_ADS_PER_SESSION} ads this session)`);
+                            } else {
+                                node.remove();
+                            }
                         }
                     }
                 }
@@ -202,10 +203,12 @@
         });
     });
     
-    // Start observing
-    observer.observe(document.head, {
-        childList: true,
-        subtree: true
-    });
+    // Start observing after a delay to avoid interfering with initial script loads
+    setTimeout(() => {
+        observer.observe(document.head, {
+            childList: true,
+            subtree: true
+        });
+    }, 200);
 })();
 
