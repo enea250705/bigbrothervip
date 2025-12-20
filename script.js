@@ -158,22 +158,28 @@ function startStream(channelNum) {
 
 function toggleFullscreen(channelNum) {
     const videoPlayer = videoPlayers[channelNum].element;
-    const iframe = videoPlayer.querySelector(`#iframe${channelNum}`);
+    const video = videoPlayers[channelNum].videoElement || videoPlayer.querySelector(`#video${channelNum}`);
     const videoWrapper = videoPlayer.closest('.video-wrapper');
     
-    if (iframe) {
-        if (iframe.requestFullscreen) {
-            iframe.requestFullscreen();
-        } else if (iframe.webkitRequestFullscreen) {
-            iframe.webkitRequestFullscreen();
-        } else if (iframe.mozRequestFullScreen) {
-            iframe.mozRequestFullScreen();
-        } else if (videoWrapper.requestFullscreen) {
-            videoWrapper.requestFullscreen();
+    if (video) {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) {
+            video.webkitRequestFullscreen();
+        } else if (video.mozRequestFullScreen) {
+            video.mozRequestFullScreen();
+        } else if (video.msRequestFullscreen) {
+            video.msRequestFullscreen();
         }
     } else if (videoWrapper) {
         if (videoWrapper.requestFullscreen) {
             videoWrapper.requestFullscreen();
+        } else if (videoWrapper.webkitRequestFullscreen) {
+            videoWrapper.webkitRequestFullscreen();
+        } else if (videoWrapper.mozRequestFullScreen) {
+            videoWrapper.mozRequestFullScreen();
+        } else if (videoWrapper.msRequestFullscreen) {
+            videoWrapper.msRequestFullscreen();
         }
     }
 }
