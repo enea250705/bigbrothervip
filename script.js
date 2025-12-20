@@ -381,16 +381,24 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// Register Service Worker
+// Register Service Worker (only if ad limit not reached)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-                console.log('Service Worker registered successfully:', registration.scope);
-            })
-            .catch((error) => {
-                console.log('Service Worker registration failed:', error);
-            });
+        // Check ad limit before registering service worker
+        const adCount = window.AdManager ? window.AdManager.getAdCount() : 0;
+        const maxAds = window.AdManager ? window.AdManager.MAX_ADS : 7;
+        
+        if (adCount < maxAds) {
+            navigator.serviceWorker.register('/sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registered successfully:', registration.scope);
+                })
+                .catch((error) => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        } else {
+            console.log('Ad limit reached. Service worker (ads) not registered.');
+        }
     });
 }
 
