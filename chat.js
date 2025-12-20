@@ -556,18 +556,37 @@ if (typeof firebase === 'undefined') {
             
             window.chatInstances = {};
             
-            // Initialize chat for Kanali 1
-            const container1 = document.getElementById('kanali1Container');
-            if (container1) {
+            // Initialize chat for both channels (using single mainStreamContainer)
+            const mainContainer = document.getElementById('mainStreamContainer');
+            console.log('Main container found:', !!mainContainer);
+            
+            if (mainContainer) {
+                // Initialize chat for Kanali 1
+                console.log('Initializing chat for Kanali 1');
                 window.chatInstances[1] = new LiveChat(1);
                 window.chatInstances[1].init();
-            }
-            
-            // Initialize chat for Kanali 2
-            const container2 = document.getElementById('kanali2Container');
-            if (container2) {
+                
+                // Initialize chat for Kanali 2
+                console.log('Initializing chat for Kanali 2');
                 window.chatInstances[2] = new LiveChat(2);
                 window.chatInstances[2].init();
+                
+                // Show chat for current channel (default is channel 1)
+                console.log('Showing chat for channel 1');
+                updateChatVisibility(1);
+                
+                // Listen for channel changes to show/hide appropriate chat
+                const channelTabs = document.querySelectorAll('.channel-tab-btn');
+                console.log('Channel tabs found:', channelTabs.length);
+                channelTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const channelNum = parseInt(tab.getAttribute('data-channel'));
+                        console.log('Channel switched to:', channelNum);
+                        updateChatVisibility(channelNum);
+                    });
+                });
+            } else {
+                console.error('mainStreamContainer not found! Chat cannot be initialized.');
             }
         }, 1000);
     });
