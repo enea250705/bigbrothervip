@@ -1205,6 +1205,8 @@ body {
     padding: 15px;
     background: rgba(26, 26, 26, 0.8);
     border-top: 2px solid rgba(0, 51, 160, 0.3);
+    margin-top: auto; /* Push to bottom */
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 .chat-input {
