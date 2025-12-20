@@ -238,7 +238,8 @@ function startStream(channelNum) {
                 width="100%" 
                 height="100%" 
                 controls
-                autoplay
+                preload="auto"
+                playsinline
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; background: #000;"
             >
                 <source src="${streamUrl}" type="${videoType}">
@@ -259,7 +260,7 @@ function startStream(channelNum) {
     const video = document.getElementById(`video${channelNum}`);
     const iframe = document.getElementById(`iframe${channelNum}`);
     
-    // Re-attach event listeners
+    // Re-attach event listeners and start video
     setTimeout(() => {
         const fullscreenBtn = videoPlayer.querySelector(`.fullscreen-btn[data-channel="${channelNum}"]`);
         const volumeBtn = videoPlayer.querySelector(`.volume-btn[data-channel="${channelNum}"]`);
@@ -274,6 +275,45 @@ function startStream(channelNum) {
         // Store element reference
         if (video) {
             videoPlayers[channelNum].videoElement = video;
+            
+            // Explicitly play the video (user interaction allows this)
+            video.play().then(() => {
+                console.log(`Video ${channelNum} started playing`);
+            }).catch((error) => {
+                console.error(`Error playing video ${channelNum}:`, error);
+                // If autoplay fails, video controls will allow manual play
+            });
+            
+            // Handle video errors
+            video.addEventListener('error', (e) => {
+                console.error(`Video ${channelNum} error:`, e);
+                const error = video.error;
+                if (error) {
+                    let errorMsg = 'Gabim në ngarkimin e videos. ';
+                    switch(error.code) {
+                        case error.MEDIA_ERR_ABORTED:
+                            errorMsg += 'Video u ndal.';
+                            break;
+                        case error.MEDIA_ERR_NETWORK:
+                            errorMsg += 'Gabim në rrjet. Kontrolloni lidhjen tuaj.';
+                            break;
+                        case error.MEDIA_ERR_DECODE:
+                            errorMsg += 'Video nuk mund të dekodohet.';
+                            break;
+                        case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                            errorMsg += 'Formati i videos nuk mbështetet.';
+                            break;
+                        default:
+                            errorMsg += 'Gabim i panjohur.';
+                    }
+                    console.error(errorMsg);
+                }
+            });
+            
+            // Handle video load
+            video.addEventListener('loadeddata', () => {
+                console.log(`Video ${channelNum} loaded successfully`);
+            });
         }
         if (iframe) {
             videoPlayers[channelNum].iframeElement = iframe;
