@@ -318,7 +318,7 @@
                 <!-- Single Video Player -->
                 <div class="video-wrapper">
                     <div class="video-placeholder" id="mainVideoPlayer">
-                        <div class="video-overlay">
+                        <div class="video-overlay" id="videoOverlay" style="display: none;">
                             <div class="play-button" id="mainPlayButton">
                                 <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
                                     <circle cx="50" cy="50" r="50" fill="rgba(255, 255, 255, 0.95)" stroke="rgba(0, 51, 160, 0.3)" stroke-width="3"/>
@@ -331,6 +331,10 @@
                         <div class="video-controls">
                             <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
                             <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
+                        </div>
+                        <div class="loading-indicator" id="loadingIndicator">
+                            <div class="loading-spinner"></div>
+                            <p>Po ngarkohet...</p>
                         </div>
                     </div>
                 </div>

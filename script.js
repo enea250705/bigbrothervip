@@ -294,8 +294,14 @@ function updateViewerCountDisplay() {
 function startStream(channelNum) {
     // Use current channel if not specified
     if (!channelNum) channelNum = currentChannel;
-    
+
     if (mainVideoPlayer.isPlaying && currentChannel === channelNum) return;
+
+    // Show loading indicator
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    if (loadingIndicator) {
+        loadingIndicator.style.display = 'flex';
+    }
     
     const videoPlayer = mainVideoPlayer.element;
     if (!videoPlayer) return;
@@ -659,14 +665,19 @@ document.addEventListener('DOMContentLoaded', () => {
     loadNews();
     loadClips();
     initNewsTabs();
-    
+
     // Initialize main video player
     initializeMainVideoPlayer();
-    
+
+    // Auto-start the stream after a short delay to ensure everything is loaded
+    setTimeout(() => {
+        startStream(1); // Start with Kanali 1 by default
+    }, 1000);
+
     // Set initial viewer counts
     updateViewerCounts();
     updateViewerCountDisplay();
-    
+
     // Update viewer count display periodically
     setInterval(() => {
         updateViewerCountDisplay();
