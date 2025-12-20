@@ -223,13 +223,23 @@ function switchChannel(channelNum) {
         channelName.textContent = `KANALI ${channelNum}`;
     }
     
-    // Update viewer count (will be updated by chat system)
-    updateViewerCountDisplay();
-    
     // Update chat visibility when switching channels
     if (window.updateChatVisibility) {
         window.updateChatVisibility(channelNum);
     }
+    
+    // Update viewer count when switching channels
+    setTimeout(() => {
+        updateViewerCountDisplay();
+        // Also force update from stored counts
+        if (window.viewerCounts && window.viewerCounts[channelNum] !== undefined) {
+            const currentViewerCount = document.getElementById('currentViewerCount');
+            if (currentViewerCount) {
+                currentViewerCount.textContent = window.viewerCounts[channelNum].toLocaleString('sq-AL');
+                console.log(`Updated viewer count on channel switch to: ${window.viewerCounts[channelNum]}`);
+            }
+        }
+    }, 500);
     
     // Stop current stream and reset player
     if (mainVideoPlayer.isPlaying) {
