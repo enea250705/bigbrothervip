@@ -50,29 +50,110 @@ if (typeof firebase === 'undefined') {
     
     const database = firebase.database();
     
-    // Generate unique user ID for this session
+    // Generate unique user ID (persists across sessions)
     function getUserId() {
-        let userId = sessionStorage.getItem('bbvip_user_id');
+        let userId = localStorage.getItem('bbvip_user_id');
         if (!userId) {
             userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            sessionStorage.setItem('bbvip_user_id', userId);
+            localStorage.setItem('bbvip_user_id', userId);
         }
         return userId;
     }
     
-    // Generate random username if not set
+    // Get username from localStorage (persists across sessions)
     function getUsername() {
-        let username = sessionStorage.getItem('bbvip_username');
-        if (!username) {
-            const adjectives = ['Super', 'Mega', 'Ultra', 'Pro', 'Elite', 'Top', 'Best', 'Cool'];
-            const nouns = ['Shikues', 'Fan', 'Mbështetës', 'Dashamirës', 'Adhurues'];
-            username = adjectives[Math.floor(Math.random() * adjectives.length)] + 
-                      nouns[Math.floor(Math.random() * nouns.length)] + 
-                      Math.floor(Math.random() * 1000);
-            sessionStorage.setItem('bbvip_username', username);
-        }
-        return username;
+        return localStorage.getItem('bbvip_username') || null;
     }
+    
+    // Set username in localStorage
+    function setUsername(username) {
+        if (username && username.trim().length > 0) {
+            localStorage.setItem('bbvip_username', username.trim());
+            return true;
+        }
+        return false;
+    }
+    
+    // Show username picker modal
+    function showUsernamePicker(callback) {
+        // Check if modal already exists
+        let modal = document.getElementById('usernamePickerModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            return;
+        }
+        
+        // Create modal
+        modal = document.createElement('div');
+        modal.id = 'usernamePickerModal';
+        modal.className = 'username-modal';
+        modal.innerHTML = `
+            <div class="username-modal-content">
+                <h2>Zgjidhni Emrin Tuaj për Chat</h2>
+                <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 14px;">
+                    Zgjidhni një emër për të marrë pjesë në chat. Ky emër do të ruhet dhe do të përdoret përsëri kur të ktheheni.
+                </p>
+                <input type="text" 
+                       id="usernameInput" 
+                       class="username-input" 
+                       placeholder="Shkruani emrin tuaj..."
+                       maxlength="20"
+                       autocomplete="off">
+                <div class="username-actions">
+                    <button class="username-submit-btn" onclick="submitUsername()">Hyr në Chat</button>
+                </div>
+                <p style="color: var(--text-gray); font-size: 12px; margin-top: 15px; text-align: center;">
+                    Emri duhet të jetë midis 2-20 karaktereve
+                </p>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // Focus input
+        setTimeout(() => {
+            const input = document.getElementById('usernameInput');
+            if (input) {
+                input.focus();
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        submitUsername();
+                    }
+                });
+            }
+        }, 100);
+        
+        // Store callback
+        modal._callback = callback;
+    }
+    
+    // Submit username
+    window.submitUsername = function() {
+        const input = document.getElementById('usernameInput');
+        if (!input) return;
+        
+        const username = input.value.trim();
+        
+        // Validate username
+        if (username.length < 2) {
+            alert('Emri duhet të jetë të paktën 2 karaktere.');
+            return;
+        }
+        if (username.length > 20) {
+            alert('Emri nuk mund të jetë më shumë se 20 karaktere.');
+            return;
+        }
+        
+        // Set username
+        if (setUsername(username)) {
+            const modal = document.getElementById('usernamePickerModal');
+            if (modal) {
+                modal.style.display = 'none';
+                if (modal._callback) {
+                    modal._callback(username);
+                }
+            }
+        }
+    };
     
     // Live Chat Manager
     class LiveChat {
@@ -83,11 +164,24 @@ if (typeof firebase === 'undefined') {
             this.messagesRef = database.ref(`chats/channel${channelNum}/messages`);
             this.viewersRef = database.ref(`viewers/channel${channelNum}`);
             this.userViewerRef = null;
-            this.maxMessages = 50; // Keep last 50 messages
+            this.maxMessages = 100; // Keep last 100 messages (increased for persistence)
+            this.messagesLoaded = false;
         }
         
         // Initialize chat
         init() {
+            // Check if username is set
+            if (!this.username) {
+                showUsernamePicker((username) => {
+                    this.username = username;
+                    this.setupChatUI();
+                    this.setupViewerCounter();
+                    this.setupMessageListener();
+                    this.registerViewer();
+                });
+                return;
+            }
+            
             this.setupChatUI();
             this.setupViewerCounter();
             this.setupMessageListener();
@@ -138,18 +232,56 @@ if (typeof firebase === 'undefined') {
             }
         }
         
-        // Setup message listener
+        // Setup message listener (loads all existing messages + new ones)
         setupMessageListener() {
+            const messagesContainer = document.getElementById(`chatMessages${this.channelNum}`);
+            
+            // First, load all existing messages
+            this.messagesRef.limitToLast(this.maxMessages).once('value', (snapshot) => {
+                const messages = snapshot.val();
+                if (messages) {
+                    // Remove loading message
+                    const loading = messagesContainer.querySelector('.chat-loading');
+                    if (loading) loading.remove();
+                    
+                    // Sort messages by timestamp
+                    const sortedMessages = Object.values(messages).sort((a, b) => a.timestamp - b.timestamp);
+                    
+                    // Display all existing messages
+                    sortedMessages.forEach(message => {
+                        this.displayMessage(message, false); // false = don't scroll
+                    });
+                    
+                    // Scroll to bottom after loading all messages
+                    setTimeout(() => {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }, 100);
+                } else {
+                    // No messages yet, remove loading
+                    const loading = messagesContainer.querySelector('.chat-loading');
+                    if (loading) loading.remove();
+                }
+                this.messagesLoaded = true;
+            });
+            
+            // Then listen for new messages
             this.messagesRef.limitToLast(this.maxMessages).on('child_added', (snapshot) => {
-                const message = snapshot.val();
-                this.displayMessage(message);
+                // Only display if we've already loaded existing messages (to avoid duplicates)
+                if (this.messagesLoaded) {
+                    const message = snapshot.val();
+                    this.displayMessage(message, true); // true = scroll to bottom
+                }
             });
         }
             
         // Display message
-        displayMessage(message) {
+        displayMessage(message, scrollToBottom = true) {
             const messagesContainer = document.getElementById(`chatMessages${this.channelNum}`);
             if (!messagesContainer) return;
+            
+            // Check if message already exists (prevent duplicates)
+            const existingMessage = messagesContainer.querySelector(`[data-message-id="${message.timestamp}_${message.userId}"]`);
+            if (existingMessage) return;
             
             // Remove loading message
             const loading = messagesContainer.querySelector('.chat-loading');
@@ -157,6 +289,7 @@ if (typeof firebase === 'undefined') {
             
             const messageDiv = document.createElement('div');
             messageDiv.className = 'chat-message';
+            messageDiv.setAttribute('data-message-id', `${message.timestamp}_${message.userId}`);
             if (message.userId === this.userId) {
                 messageDiv.classList.add('own-message');
             }
@@ -175,7 +308,10 @@ if (typeof firebase === 'undefined') {
             `;
             
             messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            if (scrollToBottom) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
         }
         
         // Send message
