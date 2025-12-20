@@ -653,12 +653,17 @@ document.addEventListener('DOMContentLoaded', () => {
     loadClips();
     initNewsTabs();
     
-    // Initialize both video players
-    initializeVideoPlayer(1);
-    initializeVideoPlayer(2);
+    // Initialize main video player
+    initializeMainVideoPlayer();
     
     // Set initial viewer counts
     updateViewerCounts();
+    updateViewerCountDisplay();
+    
+    // Update viewer count display periodically
+    setInterval(() => {
+        updateViewerCountDisplay();
+    }, 5000);
 });
 
 // Add parallax effect on scroll
