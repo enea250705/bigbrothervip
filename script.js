@@ -231,13 +231,17 @@ function switchChannel(channelNum) {
     // Update viewer count when switching channels
     setTimeout(() => {
         updateViewerCountDisplay();
-        // Also force update from stored counts
+        // Also force update from stored counts (from viewer-counter.js)
         if (window.viewerCounts && window.viewerCounts[channelNum] !== undefined) {
             const currentViewerCount = document.getElementById('currentViewerCount');
             if (currentViewerCount) {
                 currentViewerCount.textContent = window.viewerCounts[channelNum].toLocaleString('sq-AL');
                 console.log(`Updated viewer count on channel switch to: ${window.viewerCounts[channelNum]}`);
             }
+        }
+        // Also update from viewer counter instances
+        if (window.viewerCounters && window.viewerCounters[channelNum]) {
+            window.viewerCounters[channelNum].updateDisplay();
         }
     }, 500);
     
