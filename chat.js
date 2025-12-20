@@ -436,30 +436,46 @@ if (typeof firebase === 'undefined') {
         
         // Setup viewer counter
         setupViewerCounter() {
+            console.log(`Setting up viewer counter for channel ${this.channelNum}`);
+            
             // Listen for viewer count changes
             this.viewersRef.on('value', (snapshot) => {
                 const viewers = snapshot.val();
                 const count = viewers ? Object.keys(viewers).length : 0;
+                console.log(`Channel ${this.channelNum} viewer count updated:`, count);
                 this.updateViewerCount(count);
+                
+                // Also trigger display update
+                if (window.updateViewerCountDisplay) {
+                    window.updateViewerCountDisplay();
+                }
+            }, (error) => {
+                console.error(`Error reading viewer count for channel ${this.channelNum}:`, error);
             });
         }
         
         // Update viewer count display
         updateViewerCount(count) {
+            console.log(`Updating viewer count display for channel ${this.channelNum}: ${count}`);
+            
             // Update channel-specific viewer count (if exists)
             const viewerElement = document.getElementById(`viewerCount${this.channelNum}`);
             if (viewerElement) {
                 viewerElement.textContent = count.toLocaleString('sq-AL');
             }
             
-            // Update current viewer count if this is the active channel
+            // Always update current viewer count if this is the active channel
             const currentViewerCount = document.getElementById('currentViewerCount');
             if (currentViewerCount) {
                 // Check if this channel is currently active
                 const currentChannel = window.currentChannel || 1;
+                console.log(`Current channel: ${currentChannel}, This channel: ${this.channelNum}, Count: ${count}`);
                 if (this.channelNum === currentChannel) {
                     currentViewerCount.textContent = count.toLocaleString('sq-AL');
+                    console.log(`Updated currentViewerCount to: ${count}`);
                 }
+            } else {
+                console.warn('currentViewerCount element not found!');
             }
             
             // Store count for later use
@@ -469,10 +485,15 @@ if (typeof firebase === 'undefined') {
         
         // Register as viewer
         registerViewer() {
+            console.log(`Registering viewer for channel ${this.channelNum}, userId: ${this.userId}`);
             this.userViewerRef = this.viewersRef.child(this.userId);
             this.userViewerRef.set({
                 timestamp: Date.now(),
-                username: this.username
+                username: this.username || 'Guest'
+            }).then(() => {
+                console.log(`Successfully registered as viewer for channel ${this.channelNum}`);
+            }).catch((error) => {
+                console.error(`Error registering viewer for channel ${this.channelNum}:`, error);
             });
             
             // Update timestamp every 30 seconds to stay active
@@ -480,6 +501,8 @@ if (typeof firebase === 'undefined') {
                 if (this.userViewerRef) {
                     this.userViewerRef.update({
                         timestamp: Date.now()
+                    }).catch((error) => {
+                        console.error(`Error updating viewer timestamp:`, error);
                     });
                 }
             }, 30000);
