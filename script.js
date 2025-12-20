@@ -292,15 +292,21 @@ function updateViewerCountDisplay() {
 }
 
 function startStream(channelNum) {
+    console.log('startStream called with channel:', channelNum);
+
     // Use current channel if not specified
     if (!channelNum) channelNum = currentChannel;
 
-    if (mainVideoPlayer.isPlaying && currentChannel === channelNum) return;
+    if (mainVideoPlayer.isPlaying && currentChannel === channelNum) {
+        console.log('Stream already playing for this channel');
+        return;
+    }
 
     // Show loading indicator
     const loadingIndicator = document.getElementById('loadingIndicator');
     if (loadingIndicator) {
         loadingIndicator.style.display = 'flex';
+        console.log('Loading indicator shown');
     }
     
     const videoPlayer = mainVideoPlayer.element;
@@ -310,8 +316,13 @@ function startStream(channelNum) {
     
     if (!streamUrl) {
         console.error(`No stream URL configured for channel ${channelNum}`);
+        // Hide loading indicator on error
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
         return;
     }
+
+    console.log('Starting stream for channel', channelNum, 'with URL:', streamUrl);
     
     // Detect stream type (or use manual configuration)
     const streamType = streamTypes[channelNum] || detectStreamType(streamUrl);
@@ -671,8 +682,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-start the stream after a short delay to ensure everything is loaded
     setTimeout(() => {
+        console.log('Auto-starting stream...');
         startStream(1); // Start with Kanali 1 by default
-    }, 1000);
+    }, 500);
 
     // Set initial viewer counts
     updateViewerCounts();
