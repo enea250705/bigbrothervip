@@ -224,13 +224,26 @@ if (typeof firebase === 'undefined') {
         
         // Setup chat UI
         setupChatUI() {
-            const container = document.getElementById(`kanali${this.channelNum}Container`);
-            if (!container) return;
+            // Use mainStreamContainer (single container for both channels)
+            const container = document.getElementById('mainStreamContainer');
+            if (!container) {
+                console.error('mainStreamContainer not found');
+                return;
+            }
+            
+            // Check if chat container already exists
+            let chatContainer = document.getElementById(`chatContainer${this.channelNum}`);
+            if (chatContainer) {
+                // Update existing chat container
+                chatContainer.style.display = 'none'; // Hide by default, show when channel matches
+                return;
+            }
             
             // Create chat container
-            const chatContainer = document.createElement('div');
+            chatContainer = document.createElement('div');
             chatContainer.className = 'live-chat-container';
             chatContainer.id = `chatContainer${this.channelNum}`;
+            chatContainer.style.display = 'none'; // Hidden by default, shown when channel is active
             chatContainer.innerHTML = `
                 <div class="chat-header">
                     <h3>💬 Chat Live - Kanali ${this.channelNum}</h3>
@@ -254,6 +267,9 @@ if (typeof firebase === 'undefined') {
             const videoWrapper = container.querySelector('.video-wrapper');
             if (videoWrapper) {
                 videoWrapper.parentNode.insertBefore(chatContainer, videoWrapper.nextSibling);
+            } else {
+                // Fallback: append to container
+                container.appendChild(chatContainer);
             }
             
             // Enter key to send
@@ -471,35 +487,50 @@ if (typeof firebase === 'undefined') {
         }
     };
     
+    // Function to update chat visibility based on current channel
+    function updateChatVisibility(channelNum) {
+        // Hide all chat containers
+        const chat1 = document.getElementById('chatContainer1');
+        const chat2 = document.getElementById('chatContainer2');
+        if (chat1) chat1.style.display = 'none';
+        if (chat2) chat2.style.display = 'none';
+        
+        // Show chat for current channel
+        const currentChat = document.getElementById(`chatContainer${channelNum}`);
+        if (currentChat) {
+            currentChat.style.display = 'block';
+        }
+    }
+    
+    // Make updateChatVisibility available globally
+    window.updateChatVisibility = updateChatVisibility;
+    
     // Initialize chats when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
         // Wait a bit for containers to be available
         setTimeout(() => {
             if (!isFirebaseConfigured) {
-                // Show setup message in chat containers
-                const containers = ['kanali1Container', 'kanali2Container'];
-                containers.forEach(containerId => {
-                    const container = document.getElementById(containerId);
-                    if (container) {
-                        const chatContainer = document.createElement('div');
-                        chatContainer.className = 'live-chat-container';
-                        chatContainer.innerHTML = `
-                            <div class="chat-header">
-                                <h3>💬 Chat Live</h3>
+                // Show setup message in main container
+                const mainContainer = document.getElementById('mainStreamContainer');
+                if (mainContainer) {
+                    const chatContainer = document.createElement('div');
+                    chatContainer.className = 'live-chat-container';
+                    chatContainer.innerHTML = `
+                        <div class="chat-header">
+                            <h3>💬 Chat Live</h3>
+                        </div>
+                        <div class="chat-messages" style="display: flex; align-items: center; justify-content: center; padding: 40px;">
+                            <div style="text-align: center; color: var(--text-gray);">
+                                <p style="margin-bottom: 10px;">⚠️ Firebase nuk është konfiguruar</p>
+                                <p style="font-size: 12px;">Ju lutem konfiguroni Firebase në chat.js për të aktivizuar chat-in live dhe numëruesin e shikuesve.</p>
                             </div>
-                            <div class="chat-messages" style="display: flex; align-items: center; justify-content: center; padding: 40px;">
-                                <div style="text-align: center; color: var(--text-gray);">
-                                    <p style="margin-bottom: 10px;">⚠️ Firebase nuk është konfiguruar</p>
-                                    <p style="font-size: 12px;">Ju lutem konfiguroni Firebase në chat.js për të aktivizuar chat-in live dhe numëruesin e shikuesve.</p>
-                                </div>
-                            </div>
-                        `;
-                        const videoWrapper = container.querySelector('.video-wrapper');
-                        if (videoWrapper) {
-                            videoWrapper.parentNode.insertBefore(chatContainer, videoWrapper.nextSibling);
-                        }
+                        </div>
+                    `;
+                    const videoWrapper = mainContainer.querySelector('.video-wrapper');
+                    if (videoWrapper) {
+                        videoWrapper.parentNode.insertBefore(chatContainer, videoWrapper.nextSibling);
                     }
-                });
+                }
                 return;
             }
             
