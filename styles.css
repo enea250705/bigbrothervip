@@ -215,6 +215,65 @@ body {
     box-shadow: 0 10px 40px rgba(0, 51, 160, 0.5);
 }
 
+/* Channel Selection Tabs */
+.channel-tabs-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.channel-tab-btn {
+    background: rgba(10, 15, 46, 0.8);
+    border: 2px solid rgba(0, 51, 160, 0.3);
+    border-radius: 15px;
+    padding: 15px 30px;
+    color: var(--text-light);
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 300px;
+    justify-content: center;
+}
+
+.channel-tab-btn:hover {
+    background: rgba(0, 51, 160, 0.2);
+    border-color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+.channel-tab-btn.active {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    border-color: var(--primary-blue);
+    box-shadow: 0 5px 20px rgba(0, 51, 160, 0.5);
+}
+
+.channel-tab-btn span {
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.live-indicator-small {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.live-indicator-small .live-dot {
+    width: 8px;
+    height: 8px;
+}
+
+.live-indicator-small .live-text {
+    font-size: 11px;
+    font-weight: 600;
+}
+
 .stream-header {
     display: flex;
     justify-content: space-between;
