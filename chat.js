@@ -39,17 +39,48 @@ const isFirebaseConfigured = firebaseConfig.apiKey &&
 
 // Initialize Firebase (only if not already initialized)
 if (typeof firebase === 'undefined') {
-    console.error('Firebase SDK not loaded. Please add Firebase scripts to HTML.');
+    console.error('❌ Firebase SDK not loaded. Please add Firebase scripts to HTML.');
+    console.error('Make sure these scripts are in <head>:');
+    console.error('  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>');
+    console.error('  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>');
 } else if (!isFirebaseConfigured) {
-    console.warn('Firebase not configured. Please update firebaseConfig in chat.js with your Firebase credentials.');
+    console.warn('⚠️ Firebase not configured. Please update firebaseConfig in chat.js with your Firebase credentials.');
     console.warn('Live chat and viewer counter will not work until Firebase is configured.');
 } else {
-    // Initialize Firebase
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    console.log('✅ Firebase SDK loaded');
+    console.log('✅ Firebase config found');
     
-    const database = firebase.database();
+    // Initialize Firebase
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log('✅ Firebase initialized successfully');
+        } else {
+            console.log('✅ Firebase already initialized');
+        }
+        
+        const database = firebase.database();
+        console.log('✅ Firebase database reference created');
+        
+        // Test Firebase connection
+        const testRef = database.ref('.info/connected');
+        testRef.on('value', (snapshot) => {
+            if (snapshot.val() === true) {
+                console.log('✅ Firebase Realtime Database connected!');
+            } else {
+                console.warn('⚠️ Firebase Realtime Database not connected');
+            }
+        });
+        
+        // Test write permission
+        const testWriteRef = database.ref('test');
+        testWriteRef.set({ test: Date.now() }).then(() => {
+            console.log('✅ Firebase write permission OK');
+            testWriteRef.remove(); // Clean up
+        }).catch((error) => {
+            console.error('❌ Firebase write permission error:', error);
+            console.error('Please check Firebase Realtime Database rules!');
+        });
     
     // Generate unique user ID (persists across sessions)
     function getUserId() {
