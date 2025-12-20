@@ -224,20 +224,25 @@ if (typeof firebase === 'undefined') {
         
         // Setup chat UI
         setupChatUI() {
+            console.log(`Setting up chat UI for channel ${this.channelNum}`);
+            
             // Use mainStreamContainer (single container for both channels)
             const container = document.getElementById('mainStreamContainer');
             if (!container) {
-                console.error('mainStreamContainer not found');
+                console.error(`Channel ${this.channelNum}: mainStreamContainer not found`);
                 return;
             }
             
             // Check if chat container already exists
             let chatContainer = document.getElementById(`chatContainer${this.channelNum}`);
             if (chatContainer) {
+                console.log(`Chat container ${this.channelNum} already exists`);
                 // Update existing chat container
                 chatContainer.style.display = 'none'; // Hide by default, show when channel matches
                 return;
             }
+            
+            console.log(`Creating chat container for channel ${this.channelNum}`);
             
             // Create chat container
             chatContainer = document.createElement('div');
@@ -267,10 +272,14 @@ if (typeof firebase === 'undefined') {
             const videoWrapper = container.querySelector('.video-wrapper');
             if (videoWrapper) {
                 videoWrapper.parentNode.insertBefore(chatContainer, videoWrapper.nextSibling);
+                console.log(`Chat container ${this.channelNum} inserted after video wrapper`);
             } else {
                 // Fallback: append to container
                 container.appendChild(chatContainer);
+                console.log(`Chat container ${this.channelNum} appended to main container`);
             }
+            
+            console.log(`Chat container ${this.channelNum} created successfully`);
             
             // Enter key to send
             const input = document.getElementById(`chatInput${this.channelNum}`);
@@ -489,16 +498,27 @@ if (typeof firebase === 'undefined') {
     
     // Function to update chat visibility based on current channel
     function updateChatVisibility(channelNum) {
+        console.log(`Updating chat visibility to channel ${channelNum}`);
+        
         // Hide all chat containers
         const chat1 = document.getElementById('chatContainer1');
         const chat2 = document.getElementById('chatContainer2');
-        if (chat1) chat1.style.display = 'none';
-        if (chat2) chat2.style.display = 'none';
+        if (chat1) {
+            chat1.style.display = 'none';
+            console.log('Hiding chat 1');
+        }
+        if (chat2) {
+            chat2.style.display = 'none';
+            console.log('Hiding chat 2');
+        }
         
         // Show chat for current channel
         const currentChat = document.getElementById(`chatContainer${channelNum}`);
         if (currentChat) {
             currentChat.style.display = 'block';
+            console.log(`Showing chat for channel ${channelNum}`);
+        } else {
+            console.error(`Chat container ${channelNum} not found!`);
         }
     }
     
