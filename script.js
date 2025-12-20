@@ -131,25 +131,156 @@ function detectStreamType(url) {
     return 'video';
 }
 
-function initializeVideoPlayer(channelNum) {
-    const videoPlayer = document.getElementById(`videoPlayer${channelNum}`);
-    const playButton = videoPlayer.querySelector('.play-button');
+// Initialize main video player
+function initializeMainVideoPlayer() {
+    const videoPlayer = document.getElementById('mainVideoPlayer');
+    if (!videoPlayer) return;
     
-    videoPlayers[channelNum].element = videoPlayer;
+    mainVideoPlayer.element = videoPlayer;
     
-    playButton.addEventListener('click', () => {
-        startStream(channelNum);
-    });
+    // Play button
+    const playButton = document.getElementById('mainPlayButton');
+    if (playButton) {
+        playButton.addEventListener('click', () => {
+            startStream(currentChannel);
+        });
+    }
     
-    // Add control button listeners
-    const fullscreenBtn = videoPlayer.querySelector(`.fullscreen-btn[data-channel="${channelNum}"]`);
-    const volumeBtn = videoPlayer.querySelector(`.volume-btn[data-channel="${channelNum}"]`);
+    // Control buttons
+    const fullscreenBtn = document.getElementById('mainFullscreenBtn');
+    const volumeBtn = document.getElementById('mainVolumeBtn');
     
     if (fullscreenBtn) {
-        fullscreenBtn.addEventListener('click', () => toggleFullscreen(channelNum));
+        fullscreenBtn.addEventListener('click', () => toggleFullscreen());
     }
     if (volumeBtn) {
-        volumeBtn.addEventListener('click', () => toggleVolume(channelNum));
+        volumeBtn.addEventListener('click', () => toggleVolume());
+    }
+    
+    // Channel tab buttons
+    const channelTab1 = document.getElementById('channelTab1');
+    const channelTab2 = document.getElementById('channelTab2');
+    
+    if (channelTab1) {
+        channelTab1.addEventListener('click', () => switchChannel(1));
+    }
+    if (channelTab2) {
+        channelTab2.addEventListener('click', () => switchChannel(2));
+    }
+}
+
+// Switch between channels
+function switchChannel(channelNum) {
+    if (channelNum === currentChannel) return;
+    
+    currentChannel = channelNum;
+    
+    // Update active tab
+    document.querySelectorAll('.channel-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const activeTab = document.getElementById(`channelTab${channelNum}`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
+    
+    // Update channel name
+    const channelName = document.getElementById('currentChannelName');
+    if (channelName) {
+        channelName.textContent = `KANALI ${channelNum}`;
+    }
+    
+    // Update viewer count (will be updated by chat system)
+    updateViewerCountDisplay();
+    
+    // Stop current stream and reset player
+    if (mainVideoPlayer.isPlaying) {
+        stopStream();
+    }
+    
+    // Reset player to show play button
+    resetPlayer();
+}
+
+// Reset player to initial state
+function resetPlayer() {
+    const videoPlayer = mainVideoPlayer.element;
+    if (!videoPlayer) return;
+    
+    const streamMessage = document.getElementById('streamMessage');
+    if (streamMessage) {
+        streamMessage.textContent = `Kliko për të filluar shikimin e Kanali ${currentChannel}`;
+    }
+    
+    // Reset state
+    mainVideoPlayer.isPlaying = false;
+    mainVideoPlayer.videoElement = null;
+    mainVideoPlayer.iframeElement = null;
+    
+    // Show play button overlay
+    const overlay = videoPlayer.querySelector('.video-overlay');
+    if (overlay) {
+        overlay.style.display = 'flex';
+    }
+    
+    // Reset video player HTML to placeholder
+    videoPlayer.innerHTML = `
+        <div class="video-overlay">
+            <div class="play-button" id="mainPlayButton">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="40" fill="rgba(255, 255, 255, 0.9)"/>
+                    <path d="M32 24L32 56L56 40L32 24Z" fill="#0033A0"/>
+                </svg>
+            </div>
+            <p class="stream-message" id="streamMessage">Kliko për të filluar shikimin e Kanali ${currentChannel}</p>
+        </div>
+        <div class="video-controls">
+            <button class="control-btn fullscreen-btn" id="mainFullscreenBtn">⛶</button>
+            <button class="control-btn volume-btn" id="mainVolumeBtn">🔊</button>
+        </div>
+    `;
+    
+    // Re-initialize play button
+    const newPlayButton = document.getElementById('mainPlayButton');
+    if (newPlayButton) {
+        newPlayButton.addEventListener('click', () => {
+            startStream(currentChannel);
+        });
+    }
+}
+
+// Stop current stream
+function stopStream() {
+    if (mainVideoPlayer.videoElement) {
+        mainVideoPlayer.videoElement.pause();
+        mainVideoPlayer.videoElement.src = '';
+        mainVideoPlayer.videoElement.load();
+    }
+    mainVideoPlayer.isPlaying = false;
+}
+
+// Update viewer count display
+function updateViewerCountDisplay() {
+    const viewerCount1 = document.getElementById('viewerCount1');
+    const viewerCount2 = document.getElementById('viewerCount2');
+    const currentViewerCount = document.getElementById('currentViewerCount');
+    
+    if (currentViewerCount) {
+        if (currentChannel === 1 && viewerCount1) {
+            currentViewerCount.textContent = viewerCount1.textContent;
+        } else if (currentChannel === 2 && viewerCount2) {
+            currentViewerCount.textContent = viewerCount2.textContent;
+        } else {
+            // Fallback to updateViewerCounts values
+            updateViewerCounts();
+            setTimeout(() => {
+                if (currentChannel === 1 && viewerCount1) {
+                    currentViewerCount.textContent = viewerCount1.textContent;
+                } else if (currentChannel === 2 && viewerCount2) {
+                    currentViewerCount.textContent = viewerCount2.textContent;
+                }
+            }, 100);
+        }
     }
 }
 
