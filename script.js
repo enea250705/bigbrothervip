@@ -224,6 +224,11 @@ function switchChannel(channelNum) {
     // Update viewer count (will be updated by chat system)
     updateViewerCountDisplay();
     
+    // Update chat visibility when switching channels
+    if (window.updateChatVisibility) {
+        window.updateChatVisibility(channelNum);
+    }
+    
     // Stop current stream and reset player
     if (mainVideoPlayer.isPlaying) {
         stopStream();
