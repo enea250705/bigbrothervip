@@ -110,7 +110,7 @@ const mainVideoPlayer = {
 // ============================================
 const streamUrls = {
     1: 'https://ok.ru/video/10632798674630', // Kanali 1 - OK.ru live stream
-    2: '//ok.ru/videoembed/10635883912902?nochat=1&autoplay=1'  // Kanali 2 - OK.ru live stream
+    2: '//ok.ru/videoembed/10635883912902?nochat=1&autoplay=1'  // Kanali 2 - OK.ru live stream (iframe only, no video element)
 };
 
 // Stream types configuration (auto-detected, but can be manually set)
