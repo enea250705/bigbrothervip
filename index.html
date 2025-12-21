@@ -242,8 +242,8 @@
                 <a href="/" aria-label="Big Brother VIP Albania Faqja Kryesore" style="display: flex; align-items: center; gap: 15px; text-decoration: none;">
                     <img src="images/logobbv.webp" alt="Big Brother VIP Albania Logo" class="logo-img">
                     <div class="logo-text-container">
-                        <h1 class="logo">BIG BROTHER</h1>
-                        <span class="vip-text">VIP ALBANIA</span>
+                    <h1 class="logo">BIG BROTHER</h1>
+                    <span class="vip-text">VIP ALBANIA</span>
                     </div>
                 </a>
             </div>
@@ -298,8 +298,8 @@
                                 <circle cx="9" cy="12" r="2" fill="currentColor"/>
                                 <path d="M15 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                                 <path d="M7 9h2M7 15h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                            </svg>
-                        </div>
+                                </svg>
+                            </div>
                         <div class="channel-content">
                             <span class="channel-name">Kanali 2</span>
                         </div>
@@ -309,8 +309,8 @@
                         </div>
                         <div class="channel-quality">HD</div>
                     </button>
-                </div>
-                
+            </div>
+
                 <!-- Stream Header -->
                 <div class="stream-header">
                     <div class="channel-label">
@@ -434,20 +434,127 @@
     <!-- Additional Ad Scripts for Popunders -->
     <script>(function(s){s.dataset.zone='10353102',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
-    <script src="https://3nbf4.com/act/files/tag.min.js?z=10353108" data-cfasync="false" async></script>
+    <script src="https://3nbf4.com/act/files/tag.min.js?z=10353108" data-cfasync="false"></script>
 
     <script>(function(s){s.dataset.zone='10353110',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
     <script>(function(s){s.dataset.zone='10353111',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
-    <!-- Enable popunders after user interaction -->
+    <!-- Enhanced popunder support for desktop browsers -->
     <script>
-    // Popunders typically need user interaction to work
-    // This ensures they can trigger after any user click
-    document.addEventListener('click', function() {
-        // Allow popunders to work after user interaction
-        window.popunderEnabled = true;
-    }, { once: true });
+    (function() {
+        // Initialize popunder support
+        window.popunderEnabled = false;
+        window.adScriptsReady = false;
+        var userInteracted = false;
+        var isDesktop = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        console.log('🔵 Initializing popunder support. Desktop:', isDesktop);
+        
+        // Mark scripts as ready after a delay (scripts need time to initialize)
+        function markScriptsReady() {
+            window.adScriptsReady = true;
+            console.log('✅ Ad scripts marked as ready');
+            
+            // If user already interacted, enable popunders immediately
+            if (userInteracted) {
+                window.popunderEnabled = true;
+                console.log('✅ Popunders enabled (scripts ready + user interacted)');
+            }
+        }
+        
+        // Wait for DOM and scripts to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(markScriptsReady, 1500);
+            });
+        } else {
+            setTimeout(markScriptsReady, 1500);
+        }
+        
+        // Also mark ready after window load
+        window.addEventListener('load', function() {
+            setTimeout(markScriptsReady, 1000);
+        });
+        
+        // Enable popunders after user interaction (required for desktop browsers)
+        function enablePopunders(event) {
+            if (!userInteracted) {
+                userInteracted = true;
+                window.popunderEnabled = true;
+                console.log('✅ User interaction detected - popunders enabled');
+                
+                // Trigger custom event for ad scripts that listen for it
+                try {
+                    var popunderEvent = new Event('popunder-ready', { bubbles: true, cancelable: true });
+                    window.dispatchEvent(popunderEvent);
+                    document.dispatchEvent(popunderEvent);
+                } catch(e) {
+                    // Fallback for older browsers
+                    if (document.createEvent) {
+                        var evt = document.createEvent('Event');
+                        evt.initEvent('popunder-ready', true, true);
+                        window.dispatchEvent(evt);
+                    }
+                }
+                
+                // For desktop, also try to help ad scripts by ensuring they can trigger
+                if (isDesktop) {
+                    // Small delay to ensure ad scripts can process the interaction
+                    setTimeout(function() {
+                        window.popunderEnabled = true;
+                        // Some ad scripts check for this
+                        if (typeof window.allowPopunder !== 'undefined') {
+                            window.allowPopunder = true;
+                        }
+                    }, 100);
+                }
+            }
+        }
+        
+        // Listen for multiple interaction types (important for desktop)
+        var interactionEvents = ['click', 'touchstart', 'mousedown', 'keydown', 'scroll'];
+        interactionEvents.forEach(function(eventType) {
+            // Use capture phase and allow multiple triggers for better desktop support
+            document.addEventListener(eventType, enablePopunders, { 
+                passive: true, 
+                capture: true 
+            });
+        });
+        
+        // Also listen on window for clicks that might not bubble
+        window.addEventListener('click', enablePopunders, { passive: true });
+        
+        // For desktop browsers, also enable on any mouse movement after initial load
+        if (isDesktop) {
+            var mouseMoveHandler = function() {
+                enablePopunders();
+                document.removeEventListener('mousemove', mouseMoveHandler);
+            };
+            // Wait a bit before enabling on mousemove (to avoid enabling too early)
+            setTimeout(function() {
+                document.addEventListener('mousemove', mouseMoveHandler, { once: true, passive: true });
+            }, 2000);
+        }
+        
+        // Final fallback: enable after page is fully loaded and some time has passed
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (!userInteracted && isDesktop) {
+                    // On desktop, still require interaction, but log for debugging
+                    console.log('⚠️ Desktop: Popunders still require user interaction');
+                } else if (userInteracted) {
+                    window.popunderEnabled = true;
+                    console.log('✅ Popunders enabled after page load');
+                }
+            }, 2000);
+        });
+        
+        // Expose global flag for ad scripts
+        window.allowPopunder = function() {
+            return window.popunderEnabled && window.adScriptsReady;
+        };
+    })();
     </script>
 
     <script>
