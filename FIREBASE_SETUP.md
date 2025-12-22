@@ -78,3 +78,6 @@ The current rules allow anyone to read/write. For production, you might want to 
 - **Messages not sending?** Verify database rules are published
 - **Viewer count not updating?** Make sure database URL is correct in config
 
+
+
+

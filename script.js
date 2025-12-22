@@ -392,17 +392,21 @@ function startStream(channelNum) {
         // For iframe embeds (YouTube, Twitch, OK.ru, custom players)
         // Convert OK.ru video URL to embed format if needed
         let embedUrl = streamUrl;
+        
         if (streamUrl.includes('ok.ru/video/')) {
-            // OK.ru embed format: //ok.ru/videoembed/{video_id}?nochat=1&autoplay=1
+            // OK.ru embed format: https://ok.ru/videoembed/{video_id}?nochat=1&autoplay=1
             const videoId = streamUrl.match(/\/video\/(\d+)/);
             if (videoId) {
-                // Use protocol-relative URL with nochat and autoplay parameters
-                embedUrl = `//ok.ru/videoembed/${videoId[1]}?nochat=1&autoplay=1`;
+                // Use https: protocol with nochat and autoplay parameters
+                embedUrl = `https://ok.ru/videoembed/${videoId[1]}?nochat=1&autoplay=1`;
                 console.log('OK.ru video ID extracted:', videoId[1]);
                 console.log('OK.ru embed URL:', embedUrl);
             } else {
                 console.error('Failed to extract OK.ru video ID from URL:', streamUrl);
             }
+        } else if (streamUrl.includes('ok.ru/videoembed/')) {
+            // Already in embed format, use as-is (protocol-relative URLs work fine)
+            console.log('OK.ru embed URL (already formatted):', embedUrl);
         }
         
         playerHTML = `
@@ -412,7 +416,7 @@ function startStream(channelNum) {
                 height="100%" 
                 src="${embedUrl}" 
                 frameborder="0" 
-                allow="autoplay; fullscreen" 
+                allow="autoplay" 
                 allowfullscreen
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; background: #000;"
             ></iframe>
