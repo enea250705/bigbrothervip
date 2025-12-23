@@ -109,8 +109,8 @@ const mainVideoPlayer = {
 // with full controls (play, pause, volume, fullscreen, etc.)
 // ============================================
 const streamUrls = {
-    1: '//ok.ru/videoembed/11329265016561?nochat=1&autoplay=1', // Kanali 1 - OK.ru live stream
-    2: '//ok.ru/videoembed/11329271897841?nochat=1&autoplay=1'  // Kanali 2 - OK.ru live stream
+    1: 'https://s365z2.bbvipal.net/player1.php', // Kanali 1
+    2: 'https://s365z2.bbvipal.net/player2.php'  // Kanali 2
 };
 
 // Stream types configuration (auto-detected, but can be manually set)
